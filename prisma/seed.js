@@ -58,32 +58,32 @@ async function main() {
 
   const olga = await prisma.user.create({
     data: { firstName: "Ольга", lastName: "Соколова", email: "olga@example.com",
-            role: "NATIONAL", dragons: 1200, programStatus: "ACTIVE" },
+            role: "NATIONAL", dragons: 1200, programStatus: "ACTIVE", refCode: "OLGA" },
   });
 
   const ivan = await prisma.user.create({
     data: { firstName: "Иван", lastName: "Петров", email: "ivan@example.com",
-            role: "DIRECTOR", dragons: 430, programStatus: "ACTIVE",
+            role: "DIRECTOR", dragons: 430, programStatus: "ACTIVE", refCode: "IVAN",
             referrerId: olga.id }, // Ивана пригласила Ольга
   });
 
   const nataly = await prisma.user.create({
     data: { firstName: "Наталья", lastName: "Макарова", email: "nataly@example.com",
-            role: "NEWBIE", programStatus: "ACTIVE",
+            role: "NEWBIE", programStatus: "ACTIVE", refCode: "NATALY",
             programStartDate: new Date(),
             referrerId: ivan.id }, // Наталью пригласил Иван
   });
 
   await prisma.user.create({
     data: { firstName: "Пётр", lastName: "Иванов", email: "petr@example.com",
-            role: "NEWBIE", dragons: 25, programStatus: "PAUSED",
+            role: "NEWBIE", dragons: 25, programStatus: "PAUSED", refCode: "PETR",
             referrerId: ivan.id }, // Петра тоже пригласил Иван
   });
 
   // Куратор — курирует прохождение (не входит в реферальную цепочку)
   await prisma.user.create({
     data: { firstName: "Мария", lastName: "Кузнецова", email: "maria@example.com",
-            role: "CURATOR", programStatus: "ACTIVE" },
+            role: "CURATOR", programStatus: "ACTIVE", refCode: "MARIA" },
   });
 
   // ----- 4. НАЧИСЛЕНИЯ «ДРАКОНОВ» Наталье (журнал + баланс) -----

@@ -11,30 +11,16 @@
       --muted:#9aa3cf; --good:#4ade80;
     }
     * { box-sizing:border-box; margin:0; padding:0; }
-    body {
-      font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
-      background:linear-gradient(160deg,#0f1226,#171b38);
-      color:var(--text); min-height:100vh; padding-bottom:74px;
-    }
+    body { font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
+      background:linear-gradient(160deg,#0f1226,#171b38); color:var(--text); min-height:100vh; padding-bottom:74px; }
     .wrap { max-width:480px; margin:0 auto; padding:14px; }
 
-    /* Переключатель "смотреть как" */
-    .switcher {
-      background:var(--card); border:1px solid rgba(255,255,255,.06);
-      border-radius:12px; padding:10px 12px; display:flex; align-items:center; gap:10px;
-      margin-bottom:12px;
-    }
+    .switcher { background:var(--card); border:1px solid rgba(255,255,255,.06); border-radius:12px;
+      padding:10px 12px; display:flex; align-items:center; gap:10px; margin-bottom:12px; }
     .switcher label { font-size:12px; color:var(--muted); white-space:nowrap; }
-    .switcher select {
-      flex:1; background:var(--card2); color:var(--text); border:none;
-      border-radius:8px; padding:8px; font-size:14px;
-    }
+    .switcher select { flex:1; background:var(--card2); color:var(--text); border:none; border-radius:8px; padding:8px; font-size:14px; }
 
-    .hero {
-      background:linear-gradient(135deg,#ff6b6b,#ffb547);
-      border-radius:20px; padding:22px; color:#2a1a00;
-      box-shadow:0 10px 30px rgba(255,107,107,.25);
-    }
+    .hero { background:linear-gradient(135deg,#ff6b6b,#ffb547); border-radius:20px; padding:22px; color:#2a1a00; box-shadow:0 10px 30px rgba(255,107,107,.25); }
     .hero .hi { font-size:14px; opacity:.8; }
     .hero .name { font-size:26px; font-weight:800; margin:2px 0 6px; }
     .hero .role { display:inline-block; background:rgba(0,0,0,.15); padding:3px 12px; border-radius:20px; font-size:13px; font-weight:600; }
@@ -50,13 +36,11 @@
 
     .row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.06); }
     .row:last-child { border-bottom:none; }
-    .row .plus { color:var(--good); font-weight:700; }
-    .row .drg { color:var(--accent); font-weight:700; font-size:14px; }
+    .row .plus { color:var(--good); font-weight:700; } .row .drg { color:var(--accent); font-weight:700; font-size:14px; }
 
     .person { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.06); }
     .person:last-child { border-bottom:none; }
-    .person .pn { font-weight:700; } .person .pr { font-size:12px; color:var(--muted); }
-    .person .grow { flex:1; }
+    .person .pn { font-weight:700; } .person .pr { font-size:12px; color:var(--muted); } .person .grow { flex:1; }
     .rank { width:30px; text-align:center; font-weight:800; color:var(--muted); }
     .rank.top { color:var(--accent); font-size:18px; }
     .highlight { background:rgba(255,181,71,.10); border-radius:10px; padding-left:8px; padding-right:8px; }
@@ -69,96 +53,172 @@
     .dayhdr { font-size:12px; color:var(--muted); margin:14px 0 4px; font-weight:700; }
     .empty { color:var(--muted); font-size:14px; text-align:center; padding:10px 0; }
 
-    /* Нижняя навигация */
-    .nav {
-      position:fixed; bottom:0; left:0; right:0; background:rgba(20,24,50,.95);
-      backdrop-filter:blur(8px); border-top:1px solid rgba(255,255,255,.08);
-      display:flex; justify-content:space-around; padding:8px 0 10px;
-    }
-    .nav button {
-      background:none; border:none; color:var(--muted); font-size:11px;
-      display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; padding:4px 10px;
-    }
-    .nav button .ico { font-size:20px; }
-    .nav button.active { color:var(--accent); }
+    /* Форма / ссылки */
+    .field { margin-bottom:10px; }
+    .field label { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
+    .field input { width:100%; background:var(--card2); border:1px solid rgba(255,255,255,.08); color:var(--text); border-radius:10px; padding:11px; font-size:15px; }
+    .btn { width:100%; border:none; border-radius:12px; padding:13px; font-size:16px; font-weight:700; cursor:pointer;
+      background:linear-gradient(135deg,#ff6b6b,#ffb547); color:#2a1a00; margin-top:6px; }
+    .btn.secondary { background:var(--card2); color:var(--text); }
+    .linkbox { display:flex; gap:8px; margin-top:8px; }
+    .linkbox input { flex:1; background:var(--card2); border:1px solid rgba(255,255,255,.08); color:var(--accent); border-radius:10px; padding:10px; font-size:13px; }
+    .linkbox button { border:none; border-radius:10px; padding:0 16px; font-weight:700; cursor:pointer; background:var(--accent); color:#2a1a00; }
+    .msg { font-size:13px; margin-top:8px; text-align:center; }
+    .msg.err { color:var(--accent2); } .msg.ok { color:var(--good); }
+
+    .invite-hero { text-align:center; padding:26px 18px; }
+    .invite-hero .em { font-size:52px; }
+    .invite-hero h1 { font-size:22px; margin:8px 0 4px; }
+    .invite-hero p { color:var(--muted); font-size:14px; }
+    .inviter { display:inline-flex; align-items:center; gap:10px; background:var(--card2); border-radius:14px; padding:10px 16px; margin-top:14px; }
+    .inviter .in { font-weight:700; } .inviter .ir { font-size:12px; color:var(--muted); }
+
+    .nav { position:fixed; bottom:0; left:0; right:0; background:rgba(20,24,50,.95); backdrop-filter:blur(8px);
+      border-top:1px solid rgba(255,255,255,.08); display:flex; justify-content:space-around; padding:8px 0 10px; }
+    .nav.hidden { display:none; }
+    .nav button { background:none; border:none; color:var(--muted); font-size:11px; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; padding:4px 10px; }
+    .nav button .ico { font-size:20px; } .nav button.active { color:var(--accent); }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="switcher">
-      <label>Смотреть как:</label>
-      <select id="userSelect"></select>
-    </div>
-    <div id="screen"><div class="empty">Загрузка…</div></div>
+    <div id="root"><div class="empty">Загрузка…</div></div>
   </div>
 
-  <div class="nav">
-    <button data-tab="home"   class="active"><span class="ico">🏠</span>Главная</button>
+  <div class="nav" id="nav">
+    <button data-tab="home" class="active"><span class="ico">🏠</span>Главная</button>
     <button data-tab="team"><span class="ico">👥</span>Команда</button>
     <button data-tab="rating"><span class="ico">🏆</span>Рейтинг</button>
     <button data-tab="profile"><span class="ico">👤</span>Профиль</button>
   </div>
 
   <script>
-    let currentUserId = null;
-    let currentTab = "home";
-    let cabinet = null;
+    const root = document.getElementById("root");
+    const nav = document.getElementById("nav");
+    let currentUserId = null, currentTab = "home", cabinet = null;
 
-    // 1) Загружаем список людей в переключатель
-    async function initUsers() {
+    // ===== Точка входа: приглашение или приложение? =====
+    async function start() {
+      const urlRef = new URLSearchParams(location.search).get("ref");
+      // "Первое касание": запоминаем самый первый код, пока человек не зарегистрирован
+      if (urlRef && !localStorage.getItem("firstRef") && !localStorage.getItem("myUserId")) {
+        localStorage.setItem("firstRef", urlRef);
+      }
+      const pendingRef = localStorage.getItem("firstRef");
+      if (pendingRef && !localStorage.getItem("myUserId")) {
+        showInvite(pendingRef);
+      } else {
+        showApp();
+      }
+    }
+
+    // ===== Экран ПРИГЛАШЕНИЯ + регистрация =====
+    async function showInvite(code) {
+      nav.classList.add("hidden");
+      let inviter = null;
+      try {
+        const r = await fetch("/api/referrer/" + encodeURIComponent(code));
+        if (r.ok) inviter = await r.json();
+      } catch (e) {}
+
+      if (!inviter) {
+        root.innerHTML = `
+          <div class="card invite-hero">
+            <div class="em">🤔</div>
+            <h1>Ссылка недействительна</h1>
+            <p>Код приглашения «${code}» не найден.</p>
+            <button class="btn secondary" onclick="clearRefAndOpen()">Открыть приложение</button>
+          </div>`;
+        return;
+      }
+
+      root.innerHTML = `
+        <div class="card invite-hero">
+          <div class="em">🐉</div>
+          <h1>Добро пожаловать в «Лёгкий старт»!</h1>
+          <p>10 дней — и ты бизнес-партнёр Whieda.</p>
+          <div class="inviter">
+            <div class="avatar">👤</div>
+            <div style="text-align:left"><div class="in">Тебя пригласил ${inviter.name}</div><div class="ir">${inviter.role}</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Присоединиться</h2>
+          <div class="field"><label>Имя *</label><input id="f_first" placeholder="Например, Анна"></div>
+          <div class="field"><label>Фамилия</label><input id="f_last" placeholder="Смирнова"></div>
+          <div class="field"><label>Email</label><input id="f_email" type="email" placeholder="anna@mail.ru"></div>
+          <button class="btn" onclick="register('${code}')">Присоединиться к команде</button>
+          <div id="regmsg" class="msg"></div>
+        </div>`;
+    }
+
+    async function register(code) {
+      const firstName = document.getElementById("f_first").value.trim();
+      const msg = document.getElementById("regmsg");
+      if (!firstName) { msg.className = "msg err"; msg.textContent = "Впиши имя"; return; }
+      msg.className = "msg"; msg.textContent = "Создаю кабинет…";
+      try {
+        const r = await fetch("/api/register", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            firstName,
+            lastName: document.getElementById("f_last").value.trim(),
+            email: document.getElementById("f_email").value.trim(),
+            refCode: code,
+          }),
+        });
+        const d = await r.json();
+        if (!r.ok) { msg.className = "msg err"; msg.textContent = d.error || "Ошибка"; return; }
+        // Успех: "входим" под новым учеником, чистим первое касание
+        localStorage.setItem("myUserId", d.id);
+        localStorage.removeItem("firstRef");
+        msg.className = "msg ok"; msg.textContent = "Готово! Открываю кабинет…";
+        setTimeout(() => { location.href = "/"; }, 700);
+      } catch (e) { msg.className = "msg err"; msg.textContent = "Сервер недоступен"; }
+    }
+
+    function clearRefAndOpen() { localStorage.removeItem("firstRef"); location.href = "/"; }
+
+    // ===== Приложение (вкладки + переключатель) =====
+    async function showApp() {
+      nav.classList.remove("hidden");
       const users = await (await fetch("/api/users")).json();
-      const sel = document.getElementById("userSelect");
-      sel.innerHTML = users.map(u => `<option value="${u.id}">${u.name} — ${u.role}</option>`).join("");
-      currentUserId = users[0].id;
-      sel.onchange = () => { currentUserId = sel.value; loadCabinet(); };
+      const myId = localStorage.getItem("myUserId");
+      currentUserId = (myId && users.some(u => u.id === myId)) ? myId : users[0].id;
+      const options = users.map(u => `<option value="${u.id}" ${u.id===currentUserId?"selected":""}>${u.name} — ${u.role}</option>`).join("");
+      root.innerHTML = `
+        <div class="switcher"><label>Смотреть как:</label><select id="userSelect">${options}</select></div>
+        <div id="screen"></div>`;
+      document.getElementById("userSelect").onchange = (e) => { currentUserId = e.target.value; loadCabinet(); };
       loadCabinet();
     }
 
-    // 2) Тянем кабинет выбранного человека и рисуем активную вкладку
     async function loadCabinet() {
       cabinet = await (await fetch("/api/cabinet/" + currentUserId)).json();
       render();
     }
 
-    function esc(s){ return String(s); }
-
     function viewHome(d) {
-      const history = d.dragonHistory.map(t =>
-        `<div class="row"><span>${t.reason}</span><span class="plus">+${t.amount} 🐉</span></div>`).join("");
+      const history = d.dragonHistory.map(t => `<div class="row"><span>${t.reason}</span><span class="plus">+${t.amount} 🐉</span></div>`).join("");
+      const done = new Set(d.completedMissionIds);
       const program = d.program.map(day => {
         if (!day.missions.length) return "";
-        const done = new Set(d.completedMissionIds);
-        const items = day.missions.map(m => `
-          <div class="mission">
-            <span class="check ${done.has(m.id)?"done":""}">${done.has(m.id)?"✓":""}</span>
-            <span class="mt">${m.title}</span><span class="mr">+${m.reward}</span>
-          </div>`).join("");
+        const items = day.missions.map(m => `<div class="mission"><span class="check ${done.has(m.id)?"done":""}">${done.has(m.id)?"✓":""}</span><span class="mt">${m.title}</span><span class="mr">+${m.reward}</span></div>`).join("");
         return `<div class="dayhdr">${day.title}</div>${items}`;
       }).join("");
       return `
-        <div class="hero">
-          <div class="hi">Добро пожаловать в «Лёгкий старт»</div>
-          <div class="name">${d.me.name}</div>
-          <span class="role">${d.me.role}</span>
-          <div class="dragons"><span style="font-size:30px">🐉</span>
-            <div><div class="num">${d.me.dragons}</div><div class="lbl">Драконов — твои баллы</div></div>
-          </div>
+        <div class="hero"><div class="hi">Добро пожаловать в «Лёгкий старт»</div>
+          <div class="name">${d.me.name}</div><span class="role">${d.me.role}</span>
+          <div class="dragons"><span style="font-size:30px">🐉</span><div><div class="num">${d.me.dragons}</div><div class="lbl">Драконов — твои баллы</div></div></div>
         </div>
         <div class="card"><h2>История Драконов</h2>${history || '<div class="empty">Пока пусто</div>'}</div>
         <div class="card"><h2>Программа и миссии</h2>${program}</div>`;
     }
 
     function viewTeam(d) {
-      const up = d.referrer ? `
-        <div class="card"><h2>Твой наставник</h2>
-          <div class="referrer"><div class="avatar">👤</div>
-            <div><div class="rn">${d.referrer.name}</div><div class="rr">${d.referrer.role}</div></div>
-          </div></div>` : "";
-      const team = d.team.length ? d.team.map(p => `
-        <div class="person"><div class="avatar">🧑</div>
-          <div class="grow"><div class="pn">${p.name}</div><div class="pr">${p.role}</div></div>
-          <div class="drg">${p.dragons} 🐉</div></div>`).join("")
-        : '<div class="empty">Ты пока никого не пригласил.<br>Приглашённые появятся здесь.</div>';
+      const up = d.referrer ? `<div class="card"><h2>Твой наставник</h2><div class="referrer"><div class="avatar">👤</div><div><div class="rn">${d.referrer.name}</div><div class="rr">${d.referrer.role}</div></div></div></div>` : "";
+      const team = d.team.length ? d.team.map(p => `<div class="person"><div class="avatar">🧑</div><div class="grow"><div class="pn">${p.name}</div><div class="pr">${p.role}</div></div><div class="drg">${p.dragons} 🐉</div></div>`).join("")
+        : '<div class="empty">Ты пока никого не пригласил.<br>Скопируй свою ссылку во вкладке «Профиль».</div>';
       return `${up}<div class="card"><h2>Моя команда (${d.team.length})</h2>${team}</div>`;
     }
 
@@ -167,47 +227,53 @@
       const rows = list.map((p, i) => {
         const medal = i===0?"🥇":i===1?"🥈":i===2?"🥉":(i+1);
         const isMe = p.name === d.me.name;
-        return `<div class="person ${isMe?"highlight":""}">
-          <div class="rank ${i<3?"top":""}">${medal}</div>
-          <div class="grow"><div class="pn">${p.name}${isMe?" (ты)":""}</div><div class="pr">${p.role}</div></div>
-          <div class="drg">${p.dragons} 🐉</div></div>`;
+        return `<div class="person ${isMe?"highlight":""}"><div class="rank ${i<3?"top":""}">${medal}</div><div class="grow"><div class="pn">${p.name}${isMe?" (ты)":""}</div><div class="pr">${p.role}</div></div><div class="drg">${p.dragons} 🐉</div></div>`;
       }).join("");
       return `<div class="card"><h2>Рейтинг по Драконам</h2>${rows}</div>`;
     }
 
     function viewProfile(d) {
+      const link = d.me.refCode ? `${location.origin}/?ref=${d.me.refCode}` : "";
+      const linkBlock = link ? `
+        <div class="card"><h2>Моя ссылка для приглашений</h2>
+          <p class="ir" style="color:var(--muted);font-size:13px">Кто перейдёт по ней и зарегистрируется — попадёт в твою команду.</p>
+          <div class="linkbox"><input id="mylink" value="${link}" readonly><button onclick="copyLink()">Копировать</button></div>
+          <div id="copymsg" class="msg"></div>
+        </div>` : "";
       return `
-        <div class="hero" style="background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff">
-          <div class="name">${d.me.name}</div><span class="role">${d.me.role}</span>
-        </div>
+        <div class="hero" style="background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff"><div class="name">${d.me.name}</div><span class="role">${d.me.role}</span></div>
         <div class="card"><h2>О тебе</h2>
           <div class="row"><span>Роль</span><span>${d.me.role}</span></div>
           <div class="row"><span>Баллы</span><span class="drg">${d.me.dragons} 🐉</span></div>
           <div class="row"><span>Наставник</span><span>${d.referrer ? d.referrer.name : "—"}</span></div>
           <div class="row"><span>В команде</span><span>${d.team.length} чел.</span></div>
-        </div>`;
+        </div>
+        ${linkBlock}`;
+    }
+
+    function copyLink() {
+      const inp = document.getElementById("mylink");
+      inp.select(); navigator.clipboard.writeText(inp.value);
+      const m = document.getElementById("copymsg"); m.className = "msg ok"; m.textContent = "Ссылка скопирована ✓";
     }
 
     async function render() {
       const screen = document.getElementById("screen");
-      if (!cabinet) return;
-      if (currentTab === "home")    screen.innerHTML = viewHome(cabinet);
-      if (currentTab === "team")    screen.innerHTML = viewTeam(cabinet);
+      if (!screen || !cabinet) return;
+      if (currentTab === "home") screen.innerHTML = viewHome(cabinet);
+      if (currentTab === "team") screen.innerHTML = viewTeam(cabinet);
       if (currentTab === "profile") screen.innerHTML = viewProfile(cabinet);
-      if (currentTab === "rating")  screen.innerHTML = await viewRating(cabinet);
+      if (currentTab === "rating") screen.innerHTML = await viewRating(cabinet);
     }
 
-    // Клики по нижним вкладкам
     document.querySelectorAll(".nav button").forEach(btn => {
       btn.onclick = () => {
         document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        currentTab = btn.dataset.tab;
-        render();
+        btn.classList.add("active"); currentTab = btn.dataset.tab; render();
       };
     });
 
-    initUsers();
+    start();
   </script>
 </body>
 </html>
