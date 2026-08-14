@@ -3,152 +3,211 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Лёгкий старт — Кабинет</title>
+  <title>Лёгкий старт</title>
   <style>
     :root {
-      --bg: #0f1226; --card: #1a1f3a; --card2: #232a4d;
-      --accent: #ffb547; --accent2: #ff6b6b; --text: #eef1ff;
-      --muted: #9aa3cf; --good: #4ade80;
+      --bg:#0f1226; --card:#1a1f3a; --card2:#232a4d;
+      --accent:#ffb547; --accent2:#ff6b6b; --text:#eef1ff;
+      --muted:#9aa3cf; --good:#4ade80;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing:border-box; margin:0; padding:0; }
     body {
-      font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(160deg, #0f1226, #171b38);
-      color: var(--text); min-height: 100vh; padding: 16px;
+      font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
+      background:linear-gradient(160deg,#0f1226,#171b38);
+      color:var(--text); min-height:100vh; padding-bottom:74px;
     }
-    .wrap { max-width: 480px; margin: 0 auto; }
-    .loading { text-align: center; padding: 60px 0; color: var(--muted); }
+    .wrap { max-width:480px; margin:0 auto; padding:14px; }
 
-    /* Шапка */
+    /* Переключатель "смотреть как" */
+    .switcher {
+      background:var(--card); border:1px solid rgba(255,255,255,.06);
+      border-radius:12px; padding:10px 12px; display:flex; align-items:center; gap:10px;
+      margin-bottom:12px;
+    }
+    .switcher label { font-size:12px; color:var(--muted); white-space:nowrap; }
+    .switcher select {
+      flex:1; background:var(--card2); color:var(--text); border:none;
+      border-radius:8px; padding:8px; font-size:14px;
+    }
+
     .hero {
-      background: linear-gradient(135deg, #ff6b6b, #ffb547);
-      border-radius: 20px; padding: 22px; color: #2a1a00;
-      box-shadow: 0 10px 30px rgba(255,107,107,.25);
+      background:linear-gradient(135deg,#ff6b6b,#ffb547);
+      border-radius:20px; padding:22px; color:#2a1a00;
+      box-shadow:0 10px 30px rgba(255,107,107,.25);
     }
-    .hero .hi { font-size: 14px; opacity: .8; }
-    .hero .name { font-size: 26px; font-weight: 800; margin: 2px 0 6px; }
-    .hero .role {
-      display: inline-block; background: rgba(0,0,0,.15);
-      padding: 3px 12px; border-radius: 20px; font-size: 13px; font-weight: 600;
-    }
-    .dragons {
-      margin-top: 16px; display: flex; align-items: center; gap: 10px;
-      background: rgba(0,0,0,.12); border-radius: 14px; padding: 12px 16px;
-    }
-    .dragons .num { font-size: 34px; font-weight: 800; line-height: 1; }
-    .dragons .lbl { font-size: 13px; opacity: .85; }
+    .hero .hi { font-size:14px; opacity:.8; }
+    .hero .name { font-size:26px; font-weight:800; margin:2px 0 6px; }
+    .hero .role { display:inline-block; background:rgba(0,0,0,.15); padding:3px 12px; border-radius:20px; font-size:13px; font-weight:600; }
+    .dragons { margin-top:16px; display:flex; align-items:center; gap:10px; background:rgba(0,0,0,.12); border-radius:14px; padding:12px 16px; }
+    .dragons .num { font-size:34px; font-weight:800; line-height:1; }
+    .dragons .lbl { font-size:13px; opacity:.85; }
 
-    /* Карточки */
-    .card {
-      background: var(--card); border-radius: 16px; padding: 16px;
-      margin-top: 14px; border: 1px solid rgba(255,255,255,.05);
-    }
-    .card h2 { font-size: 15px; color: var(--accent); margin-bottom: 12px; }
-    .referrer { display: flex; align-items: center; gap: 12px; }
-    .avatar {
-      width: 44px; height: 44px; border-radius: 50%;
-      background: var(--card2); display: grid; place-items: center; font-size: 20px;
-    }
-    .referrer .rn { font-weight: 700; }
-    .referrer .rr { font-size: 13px; color: var(--muted); }
+    .card { background:var(--card); border-radius:16px; padding:16px; margin-top:14px; border:1px solid rgba(255,255,255,.05); }
+    .card h2 { font-size:15px; color:var(--accent); margin-bottom:12px; }
+    .referrer { display:flex; align-items:center; gap:12px; }
+    .avatar { width:44px; height:44px; border-radius:50%; background:var(--card2); display:grid; place-items:center; font-size:20px; flex:none; }
+    .referrer .rn { font-weight:700; } .referrer .rr { font-size:13px; color:var(--muted); }
 
-    .row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-    .row:last-child { border-bottom: none; }
-    .row .plus { color: var(--good); font-weight: 700; }
+    .row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.06); }
+    .row:last-child { border-bottom:none; }
+    .row .plus { color:var(--good); font-weight:700; }
+    .row .drg { color:var(--accent); font-weight:700; font-size:14px; }
 
-    .mission {
-      display: flex; align-items: center; gap: 10px; padding: 9px 0;
-      border-bottom: 1px solid rgba(255,255,255,.06);
+    .person { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.06); }
+    .person:last-child { border-bottom:none; }
+    .person .pn { font-weight:700; } .person .pr { font-size:12px; color:var(--muted); }
+    .person .grow { flex:1; }
+    .rank { width:30px; text-align:center; font-weight:800; color:var(--muted); }
+    .rank.top { color:var(--accent); font-size:18px; }
+    .highlight { background:rgba(255,181,71,.10); border-radius:10px; padding-left:8px; padding-right:8px; }
+
+    .mission { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid rgba(255,255,255,.06); }
+    .mission:last-child { border-bottom:none; }
+    .check { width:22px; height:22px; border-radius:50%; flex:none; display:grid; place-items:center; font-size:13px; background:var(--card2); color:var(--muted); }
+    .check.done { background:var(--good); color:#06340f; }
+    .mission .mt { flex:1; font-size:14px; } .mission .mr { font-size:12px; color:var(--accent); }
+    .dayhdr { font-size:12px; color:var(--muted); margin:14px 0 4px; font-weight:700; }
+    .empty { color:var(--muted); font-size:14px; text-align:center; padding:10px 0; }
+
+    /* Нижняя навигация */
+    .nav {
+      position:fixed; bottom:0; left:0; right:0; background:rgba(20,24,50,.95);
+      backdrop-filter:blur(8px); border-top:1px solid rgba(255,255,255,.08);
+      display:flex; justify-content:space-around; padding:8px 0 10px;
     }
-    .mission:last-child { border-bottom: none; }
-    .check {
-      width: 22px; height: 22px; border-radius: 50%; flex: none;
-      display: grid; place-items: center; font-size: 13px;
-      background: var(--card2); color: var(--muted);
+    .nav button {
+      background:none; border:none; color:var(--muted); font-size:11px;
+      display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; padding:4px 10px;
     }
-    .check.done { background: var(--good); color: #06340f; }
-    .mission .mt { flex: 1; font-size: 14px; }
-    .mission .mr { font-size: 12px; color: var(--accent); }
-    .dayhdr { font-size: 12px; color: var(--muted); margin: 14px 0 4px; font-weight: 700; }
-    .footnote { text-align:center; color: var(--muted); font-size: 12px; margin: 20px 0; }
+    .nav button .ico { font-size:20px; }
+    .nav button.active { color:var(--accent); }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div id="app" class="loading">Загружаю кабинет из базы данных…</div>
+    <div class="switcher">
+      <label>Смотреть как:</label>
+      <select id="userSelect"></select>
+    </div>
+    <div id="screen"><div class="empty">Загрузка…</div></div>
+  </div>
+
+  <div class="nav">
+    <button data-tab="home"   class="active"><span class="ico">🏠</span>Главная</button>
+    <button data-tab="team"><span class="ico">👥</span>Команда</button>
+    <button data-tab="rating"><span class="ico">🏆</span>Рейтинг</button>
+    <button data-tab="profile"><span class="ico">👤</span>Профиль</button>
   </div>
 
   <script>
-    async function load() {
-      const app = document.getElementById("app");
-      try {
-        const r = await fetch("/api/cabinet");
-        const d = await r.json();
+    let currentUserId = null;
+    let currentTab = "home";
+    let cabinet = null;
 
-        const done = new Set(d.completedMissionIds);
-
-        const history = d.dragonHistory.map(t =>
-          `<div class="row"><span>${t.reason}</span><span class="plus">+${t.amount} 🐉</span></div>`
-        ).join("");
-
-        const program = d.program.map(day => {
-          if (!day.missions.length) return "";
-          const items = day.missions.map(m => `
-            <div class="mission">
-              <span class="check ${done.has(m.id) ? "done" : ""}">${done.has(m.id) ? "✓" : ""}</span>
-              <span class="mt">${m.title}</span>
-              <span class="mr">+${m.reward}</span>
-            </div>`).join("");
-          return `<div class="dayhdr">${day.title}</div>${items}`;
-        }).join("");
-
-        app.className = "";
-        app.innerHTML = `
-          <div class="hero">
-            <div class="hi">Добро пожаловать в «Лёгкий старт»</div>
-            <div class="name">${d.me.name}</div>
-            <span class="role">${d.me.role}</span>
-            <div class="dragons">
-              <span style="font-size:30px">🐉</span>
-              <div>
-                <div class="num">${d.me.dragons}</div>
-                <div class="lbl">Драконов — твои баллы</div>
-              </div>
-            </div>
-          </div>
-
-          ${d.referrer ? `
-          <div class="card">
-            <h2>Кто тебя пригласил</h2>
-            <div class="referrer">
-              <div class="avatar">👤</div>
-              <div>
-                <div class="rn">${d.referrer.name}</div>
-                <div class="rr">${d.referrer.role}</div>
-              </div>
-            </div>
-          </div>` : ""}
-
-          <div class="card">
-            <h2>История Драконов</h2>
-            ${history || '<div class="rr">Пока пусто</div>'}
-          </div>
-
-          <div class="card">
-            <h2>Программа и миссии</h2>
-            ${program}
-          </div>
-
-          <div class="footnote">Данные загружены из настоящей базы приложения ✨</div>
-        `;
-      } catch (e) {
-        app.innerHTML = "Не удалось загрузить данные. Сервер запущен?";
-      }
+    // 1) Загружаем список людей в переключатель
+    async function initUsers() {
+      const users = await (await fetch("/api/users")).json();
+      const sel = document.getElementById("userSelect");
+      sel.innerHTML = users.map(u => `<option value="${u.id}">${u.name} — ${u.role}</option>`).join("");
+      currentUserId = users[0].id;
+      sel.onchange = () => { currentUserId = sel.value; loadCabinet(); };
+      loadCabinet();
     }
-    load();
+
+    // 2) Тянем кабинет выбранного человека и рисуем активную вкладку
+    async function loadCabinet() {
+      cabinet = await (await fetch("/api/cabinet/" + currentUserId)).json();
+      render();
+    }
+
+    function esc(s){ return String(s); }
+
+    function viewHome(d) {
+      const history = d.dragonHistory.map(t =>
+        `<div class="row"><span>${t.reason}</span><span class="plus">+${t.amount} 🐉</span></div>`).join("");
+      const program = d.program.map(day => {
+        if (!day.missions.length) return "";
+        const done = new Set(d.completedMissionIds);
+        const items = day.missions.map(m => `
+          <div class="mission">
+            <span class="check ${done.has(m.id)?"done":""}">${done.has(m.id)?"✓":""}</span>
+            <span class="mt">${m.title}</span><span class="mr">+${m.reward}</span>
+          </div>`).join("");
+        return `<div class="dayhdr">${day.title}</div>${items}`;
+      }).join("");
+      return `
+        <div class="hero">
+          <div class="hi">Добро пожаловать в «Лёгкий старт»</div>
+          <div class="name">${d.me.name}</div>
+          <span class="role">${d.me.role}</span>
+          <div class="dragons"><span style="font-size:30px">🐉</span>
+            <div><div class="num">${d.me.dragons}</div><div class="lbl">Драконов — твои баллы</div></div>
+          </div>
+        </div>
+        <div class="card"><h2>История Драконов</h2>${history || '<div class="empty">Пока пусто</div>'}</div>
+        <div class="card"><h2>Программа и миссии</h2>${program}</div>`;
+    }
+
+    function viewTeam(d) {
+      const up = d.referrer ? `
+        <div class="card"><h2>Твой наставник</h2>
+          <div class="referrer"><div class="avatar">👤</div>
+            <div><div class="rn">${d.referrer.name}</div><div class="rr">${d.referrer.role}</div></div>
+          </div></div>` : "";
+      const team = d.team.length ? d.team.map(p => `
+        <div class="person"><div class="avatar">🧑</div>
+          <div class="grow"><div class="pn">${p.name}</div><div class="pr">${p.role}</div></div>
+          <div class="drg">${p.dragons} 🐉</div></div>`).join("")
+        : '<div class="empty">Ты пока никого не пригласил.<br>Приглашённые появятся здесь.</div>';
+      return `${up}<div class="card"><h2>Моя команда (${d.team.length})</h2>${team}</div>`;
+    }
+
+    async function viewRating(d) {
+      const list = await (await fetch("/api/rating")).json();
+      const rows = list.map((p, i) => {
+        const medal = i===0?"🥇":i===1?"🥈":i===2?"🥉":(i+1);
+        const isMe = p.name === d.me.name;
+        return `<div class="person ${isMe?"highlight":""}">
+          <div class="rank ${i<3?"top":""}">${medal}</div>
+          <div class="grow"><div class="pn">${p.name}${isMe?" (ты)":""}</div><div class="pr">${p.role}</div></div>
+          <div class="drg">${p.dragons} 🐉</div></div>`;
+      }).join("");
+      return `<div class="card"><h2>Рейтинг по Драконам</h2>${rows}</div>`;
+    }
+
+    function viewProfile(d) {
+      return `
+        <div class="hero" style="background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff">
+          <div class="name">${d.me.name}</div><span class="role">${d.me.role}</span>
+        </div>
+        <div class="card"><h2>О тебе</h2>
+          <div class="row"><span>Роль</span><span>${d.me.role}</span></div>
+          <div class="row"><span>Баллы</span><span class="drg">${d.me.dragons} 🐉</span></div>
+          <div class="row"><span>Наставник</span><span>${d.referrer ? d.referrer.name : "—"}</span></div>
+          <div class="row"><span>В команде</span><span>${d.team.length} чел.</span></div>
+        </div>`;
+    }
+
+    async function render() {
+      const screen = document.getElementById("screen");
+      if (!cabinet) return;
+      if (currentTab === "home")    screen.innerHTML = viewHome(cabinet);
+      if (currentTab === "team")    screen.innerHTML = viewTeam(cabinet);
+      if (currentTab === "profile") screen.innerHTML = viewProfile(cabinet);
+      if (currentTab === "rating")  screen.innerHTML = await viewRating(cabinet);
+    }
+
+    // Клики по нижним вкладкам
+    document.querySelectorAll(".nav button").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentTab = btn.dataset.tab;
+        render();
+      };
+    });
+
+    initUsers();
   </script>
 </body>
 </html>
