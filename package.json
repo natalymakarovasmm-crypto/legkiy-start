@@ -4,6 +4,16 @@
   "description": "Мини-приложение бизнес-академии Whieda — программа адаптации новичков «Лёгкий старт»",
   "private": true,
   "scripts": {
-    "note": "Здесь будут команды запуска. Появятся, когда установим двигатель (Node.js)."
+    "seed": "node prisma/seed.js",
+    "studio": "prisma studio"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
+  "devDependencies": {
+    "prisma": "^6.1.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.1.0"
   }
 }
