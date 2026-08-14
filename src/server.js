@@ -5,13 +5,19 @@
 //  Экраны: Главная, Команда, Рейтинг, Профиль. Запуск:  npm start
 // ============================================================================
 
+// Если адрес базы не задан (например, локально) — используем файл SQLite по умолчанию.
+if (!process.env.DATABASE_URL) process.env.DATABASE_URL = "file:./dev.db";
+
 const express = require("express");
 const path = require("path");
+const { execSync } = require("child_process");
 const { PrismaClient } = require("@prisma/client");
+const { seedIfEmpty } = require("../prisma/seed-data");
 
 const prisma = new PrismaClient();
 const app = express();
-const PORT = 3000;
+// Хостинг сам подсказывает порт через переменную PORT; локально — 3000.
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json()); // чтобы читать данные регистрации из тела запроса
 app.use(express.static(path.join(__dirname, "..", "public")));
@@ -139,6 +145,21 @@ app.get("/api/cabinet/:id", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Приложение «Лёгкий старт» запущено: http://localhost:${PORT}`);
-});
+// --- Запуск с самоподготовкой базы (важно для сервера) ---
+async function startServer() {
+  try {
+    // 1. Создаём/обновляем таблицы из миграций (не задаёт вопросов)
+    console.log("Готовлю базу данных...");
+    execSync("npx prisma migrate deploy", { stdio: "inherit" });
+    // 2. Наполняем примерами, только если база пустая
+    await seedIfEmpty(prisma);
+  } catch (e) {
+    console.error("Не удалось подготовить базу:", e.message);
+  }
+  // 3. Слушаем 0.0.0.0 — чтобы приложение было доступно снаружи (требование хостинга)
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Приложение «Лёгкий старт» запущено на порту ${PORT}`);
+  });
+}
+
+startServer();
