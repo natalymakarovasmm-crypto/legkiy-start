@@ -1,165 +1,141 @@
 // ============================================================================
-//  МИНИ-СЕРВЕР приложения «Лёгкий старт»
+//  СЕРВЕР приложения «Лёгкий старт» — версия для интернета (встроенные данные)
 // ----------------------------------------------------------------------------
-//  Это "мозг": принимает запросы из браузера и отдаёт данные из базы.
-//  Экраны: Главная, Команда, Рейтинг, Профиль. Запуск:  npm start
+//  Никакой базы данных: все примеры хранятся прямо здесь, в коде (в памяти).
+//  Это делает запуск на любом хостинге простым и надёжным. Регистрация новых
+//  участников работает, но сбрасывается при перезапуске — для показа этого
+//  достаточно. Настоящую базу (PostgreSQL) подключим отдельным этапом.
+//  Запуск:  npm start
 // ============================================================================
-
-// Если адрес базы не задан (например, локально) — используем файл SQLite по умолчанию.
-if (!process.env.DATABASE_URL) process.env.DATABASE_URL = "file:./dev.db";
 
 const express = require("express");
 const path = require("path");
-const { execSync } = require("child_process");
-const { PrismaClient } = require("@prisma/client");
-const { seedIfEmpty } = require("../prisma/seed-data");
 
-const prisma = new PrismaClient();
 const app = express();
-// Хостинг сам подсказывает порт через переменную PORT; локально — 3000.
-const PORT = process.env.PORT || 3000;
-
-app.use(express.json()); // чтобы читать данные регистрации из тела запроса
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-// Генерируем короткий уникальный реферальный код для нового ученика
-async function makeUniqueRefCode() {
-  for (let i = 0; i < 20; i++) {
-    const code = Math.random().toString(36).slice(2, 8).toUpperCase(); // напр. "K3F9Q2"
-    const exists = await prisma.user.findUnique({ where: { refCode: code } });
-    if (!exists) return code;
-  }
-  return "R" + Date.now().toString(36).toUpperCase(); // запасной вариант
-}
+const PORT = process.env.PORT || 3000;
 
-// Понятные русские подписи
-const REASON_LABELS = {
-  DAILY_MISSION: "Итог дня / миссия",
-  CALL: "Звонок",
-  DIRECTOR_MEETING: "Встреча с директором",
-  DEAL_CLOSED: "Закрытая сделка",
-  REFERRAL_BONUS: "Бонус за приглашённого",
-  OTHER: "Прочее",
-};
+// --- Понятные подписи ---
 const ROLE_LABELS = {
-  NEWBIE: "Новичок",
-  DIRECTOR: "Директор",
-  NATIONAL: "Национальный директор",
-  CURATOR: "Куратор",
+  NEWBIE: "Новичок", DIRECTOR: "Директор",
+  NATIONAL: "Национальный директор", CURATOR: "Куратор",
+};
+const REASON_LABELS = {
+  DAILY_MISSION: "Итог дня / миссия", CALL: "Звонок",
+  DIRECTOR_MEETING: "Встреча с директором", DEAL_CLOSED: "Закрытая сделка",
+  REFERRAL_BONUS: "Бонус за приглашённого", OTHER: "Прочее",
 };
 const roleLabel = (r) => ROLE_LABELS[r] || r;
-const fullName = (u) => `${u.firstName} ${u.lastName}`;
+const fullName = (u) => `${u.firstName} ${u.lastName}`.trim();
 
-// --- Список учеников для переключателя "смотреть как..." ---
-app.get("/api/users", async (req, res) => {
-  const users = await prisma.user.findMany({ orderBy: { createdAt: "asc" } });
+// ============================================================================
+//  ВСТРОЕННЫЕ ДАННЫЕ (то, что раньше лежало в базе)
+// ============================================================================
+
+// Ученики + реферальная цепочка: Ольга → Иван → Наталья/Пётр
+const users = [
+  { id: "olga", firstName: "Ольга", lastName: "Соколова", role: "NATIONAL",
+    dragons: 1200, referrerId: null, refCode: "OLGA",
+    dragonHistory: [], missionsDone: [] },
+  { id: "ivan", firstName: "Иван", lastName: "Петров", role: "DIRECTOR",
+    dragons: 430, referrerId: "olga", refCode: "IVAN",
+    dragonHistory: [], missionsDone: [] },
+  { id: "nataly", firstName: "Наталья", lastName: "Макарова", role: "NEWBIE",
+    dragons: 165, referrerId: "ivan", refCode: "NATALY",
+    dragonHistory: [
+      { amount: 100, reason: "DEAL_CLOSED" },
+      { amount: 50, reason: "DIRECTOR_MEETING" },
+      { amount: 5, reason: "CALL" },
+      { amount: 10, reason: "DAILY_MISSION" },
+    ],
+    missionsDone: ["m1"] },
+  { id: "petr", firstName: "Пётр", lastName: "Иванов", role: "NEWBIE",
+    dragons: 25, referrerId: "ivan", refCode: "PETR",
+    dragonHistory: [], missionsDone: [] },
+  { id: "maria", firstName: "Мария", lastName: "Кузнецова", role: "CURATOR",
+    dragons: 0, referrerId: null, refCode: "MARIA",
+    dragonHistory: [], missionsDone: [] },
+];
+
+// 10-дневная программа (миссии — у нескольких дней)
+const program = [
+  { dayNumber: 0,  title: "День 0. Добро пожаловать",      missions: [] },
+  { dayNumber: 1,  title: "День 1. Продукт Whieda",        missions: [{ id: "m1", title: "Изучить 3 продукта", reward: 10 }] },
+  { dayNumber: 2,  title: "День 2. Твоя история",          missions: [] },
+  { dayNumber: 3,  title: "День 3. Работа с возражениями", missions: [{ id: "m3", title: "Разобрать 5 возражений", reward: 10 }] },
+  { dayNumber: 4,  title: "День 4. Первые звонки",         missions: [{ id: "m4", title: "Сделать 20 звонков", reward: 10 }] },
+  { dayNumber: 5,  title: "День 5. Встреча с директором",  missions: [] },
+  { dayNumber: 6,  title: "День 6. Презентация",           missions: [] },
+  { dayNumber: 7,  title: "День 7. Закрытие сделки",       missions: [] },
+  { dayNumber: 8,  title: "День 8. Твоя команда",          missions: [] },
+  { dayNumber: 9,  title: "День 9. Аналитика 20/10/3",     missions: [] },
+  { dayNumber: 10, title: "День 10. Ты — бизнес-партнёр",  missions: [] },
+];
+
+const findUser = (id) => users.find((u) => u.id === id);
+const findByCode = (code) => users.find((u) => u.refCode === code);
+
+// ============================================================================
+//  ЗАПРОСЫ (те же адреса, что и раньше — страница не меняется)
+// ============================================================================
+
+// Список учеников для переключателя "смотреть как..."
+app.get("/api/users", (req, res) => {
   res.json(users.map((u) => ({ id: u.id, name: fullName(u), role: roleLabel(u.role) })));
 });
 
-// --- Рейтинг: все ученики по количеству Драконов ---
-app.get("/api/rating", async (req, res) => {
-  const users = await prisma.user.findMany({ orderBy: { dragons: "desc" } });
-  res.json(users.map((u) => ({ name: fullName(u), role: roleLabel(u.role), dragons: u.dragons })));
+// Рейтинг по Драконам
+app.get("/api/rating", (req, res) => {
+  const sorted = [...users].sort((a, b) => b.dragons - a.dragons);
+  res.json(sorted.map((u) => ({ name: fullName(u), role: roleLabel(u.role), dragons: u.dragons })));
 });
 
-// --- Проверка реферального кода: кто пригласил (для экрана приглашения) ---
-app.get("/api/referrer/:code", async (req, res) => {
-  const owner = await prisma.user.findUnique({ where: { refCode: req.params.code } });
+// Проверка реферального кода (кто пригласил)
+app.get("/api/referrer/:code", (req, res) => {
+  const owner = findByCode(req.params.code);
   if (!owner) return res.status(404).json({ error: "Код не найден" });
   res.json({ name: fullName(owner), role: roleLabel(owner.role) });
 });
 
-// --- Регистрация нового ученика по реферальной ссылке ---
-app.post("/api/register", async (req, res) => {
-  try {
-    const { firstName, lastName, email, refCode } = req.body;
-    if (!firstName || !refCode) {
-      return res.status(400).json({ error: "Нужно имя и реферальный код" });
-    }
-    // Находим пригласившего по его коду
-    const referrer = await prisma.user.findUnique({ where: { refCode } });
-    if (!referrer) return res.status(404).json({ error: "Пригласивший не найден" });
+// Кабинет конкретного ученика
+app.get("/api/cabinet/:id", (req, res) => {
+  const user = findUser(req.params.id);
+  if (!user) return res.status(404).json({ error: "Ученик не найден" });
 
-    // Создаём новичка, ПРИВЯЗАННОГО к пригласившему, с личным кодом
-    const newUser = await prisma.user.create({
-      data: {
-        firstName,
-        lastName: lastName || "",
-        email: email || null,
-        role: "NEWBIE",
-        programStatus: "ACTIVE",
-        programStartDate: new Date(),
-        referrerId: referrer.id,          // <-- ПРИВЯЗКА к пригласившему
-        refCode: await makeUniqueRefCode(),
-      },
-    });
+  const referrer = user.referrerId ? findUser(user.referrerId) : null;
+  const team = users.filter((u) => u.referrerId === user.id);
 
-    res.json({ id: newUser.id, name: fullName(newUser), refCode: newUser.refCode });
-  } catch (e) {
-    // Частый случай — email уже занят
-    if (e.code === "P2002") return res.status(409).json({ error: "Такой email уже зарегистрирован" });
-    console.error(e);
-    res.status(500).json({ error: "Ошибка на сервере" });
-  }
-});
-
-// --- Кабинет конкретного ученика (по его id) ---
-app.get("/api/cabinet/:id", async (req, res) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.params.id },
-      include: {
-        referrer: true,                       // кто пригласил (наставник)
-        referrals: true,                      // кого пригласил я (моя команда)
-        dragonHistory: { orderBy: { createdAt: "desc" } },
-        missionsDone: true,
-      },
-    });
-    if (!user) return res.status(404).json({ error: "Ученик не найден" });
-
-    const program = await prisma.programDay.findMany({
-      orderBy: { dayNumber: "asc" },
-      include: { missions: true },
-    });
-
-    res.json({
-      me: { name: fullName(user), role: roleLabel(user.role), dragons: user.dragons, refCode: user.refCode },
-      referrer: user.referrer
-        ? { name: fullName(user.referrer), role: roleLabel(user.referrer.role) }
-        : null,
-      team: user.referrals.map((u) => ({
-        name: fullName(u), role: roleLabel(u.role), dragons: u.dragons,
-      })),
-      dragonHistory: user.dragonHistory.map((t) => ({
-        amount: t.amount, reason: REASON_LABELS[t.reason] || t.reason,
-      })),
-      completedMissionIds: user.missionsDone.map((m) => m.missionId),
-      program: program.map((d) => ({
-        dayNumber: d.dayNumber, title: d.title,
-        missions: d.missions.map((m) => ({ id: m.id, title: m.title, reward: m.dragonReward })),
-      })),
-    });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Ошибка на сервере" });
-  }
-});
-
-// --- Запуск с самоподготовкой базы (важно для сервера) ---
-async function startServer() {
-  try {
-    // 1. Создаём/обновляем таблицы из миграций (не задаёт вопросов)
-    console.log("Готовлю базу данных...");
-    execSync("npx prisma migrate deploy", { stdio: "inherit" });
-    // 2. Наполняем примерами, только если база пустая
-    await seedIfEmpty(prisma);
-  } catch (e) {
-    console.error("Не удалось подготовить базу:", e.message);
-  }
-  // 3. Слушаем 0.0.0.0 — чтобы приложение было доступно снаружи (требование хостинга)
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Приложение «Лёгкий старт» запущено на порту ${PORT}`);
+  res.json({
+    me: { name: fullName(user), role: roleLabel(user.role), dragons: user.dragons, refCode: user.refCode },
+    referrer: referrer ? { name: fullName(referrer), role: roleLabel(referrer.role) } : null,
+    team: team.map((u) => ({ name: fullName(u), role: roleLabel(u.role), dragons: u.dragons })),
+    dragonHistory: user.dragonHistory.map((t) => ({ amount: t.amount, reason: REASON_LABELS[t.reason] || t.reason })),
+    completedMissionIds: user.missionsDone,
+    program,
   });
-}
+});
 
-startServer();
+// Регистрация нового ученика по реферальной ссылке
+app.post("/api/register", (req, res) => {
+  const { firstName, lastName, email, refCode } = req.body || {};
+  if (!firstName || !refCode) return res.status(400).json({ error: "Нужно имя и реферальный код" });
+
+  const referrer = findByCode(refCode);
+  if (!referrer) return res.status(404).json({ error: "Пригласивший не найден" });
+
+  const newUser = {
+    id: "u" + Date.now(),
+    firstName, lastName: lastName || "", email: email || null,
+    role: "NEWBIE", dragons: 0, referrerId: referrer.id,
+    refCode: Math.random().toString(36).slice(2, 8).toUpperCase(),
+    dragonHistory: [], missionsDone: [],
+  };
+  users.push(newUser); // хранится в памяти до перезапуска
+  res.json({ id: newUser.id, name: fullName(newUser), refCode: newUser.refCode });
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Приложение «Лёгкий старт» запущено на порту ${PORT}`);
+});
