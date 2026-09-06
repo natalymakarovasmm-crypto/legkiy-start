@@ -5,274 +5,199 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Лёгкий старт</title>
   <style>
-    :root {
-      --bg:#0f1226; --card:#1a1f3a; --card2:#232a4d;
-      --accent:#ffb547; --accent2:#ff6b6b; --text:#eef1ff;
-      --muted:#9aa3cf; --good:#4ade80;
-    }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
-      background:linear-gradient(160deg,#0f1226,#171b38); color:var(--text); min-height:100vh; padding-bottom:74px; }
-    .wrap { max-width:480px; margin:0 auto; padding:14px; }
-
-    .switcher { background:var(--card); border:1px solid rgba(255,255,255,.06); border-radius:12px;
-      padding:10px 12px; display:flex; align-items:center; gap:10px; margin-bottom:12px; }
-    .switcher label { font-size:12px; color:var(--muted); white-space:nowrap; }
-    .switcher select { flex:1; background:var(--card2); color:var(--text); border:none; border-radius:8px; padding:8px; font-size:14px; }
-
-    .hero { background:linear-gradient(135deg,#ff6b6b,#ffb547); border-radius:20px; padding:22px; color:#2a1a00; box-shadow:0 10px 30px rgba(255,107,107,.25); }
-    .hero .hi { font-size:14px; opacity:.8; }
-    .hero .name { font-size:26px; font-weight:800; margin:2px 0 6px; }
-    .hero .role { display:inline-block; background:rgba(0,0,0,.15); padding:3px 12px; border-radius:20px; font-size:13px; font-weight:600; }
-    .dragons { margin-top:16px; display:flex; align-items:center; gap:10px; background:rgba(0,0,0,.12); border-radius:14px; padding:12px 16px; }
-    .dragons .num { font-size:34px; font-weight:800; line-height:1; }
-    .dragons .lbl { font-size:13px; opacity:.85; }
-
-    .card { background:var(--card); border-radius:16px; padding:16px; margin-top:14px; border:1px solid rgba(255,255,255,.05); }
-    .card h2 { font-size:15px; color:var(--accent); margin-bottom:12px; }
-    .referrer { display:flex; align-items:center; gap:12px; }
-    .avatar { width:44px; height:44px; border-radius:50%; background:var(--card2); display:grid; place-items:center; font-size:20px; flex:none; }
-    .referrer .rn { font-weight:700; } .referrer .rr { font-size:13px; color:var(--muted); }
-
-    .row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.06); }
-    .row:last-child { border-bottom:none; }
-    .row .plus { color:var(--good); font-weight:700; } .row .drg { color:var(--accent); font-weight:700; font-size:14px; }
-
-    .person { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.06); }
-    .person:last-child { border-bottom:none; }
-    .person .pn { font-weight:700; } .person .pr { font-size:12px; color:var(--muted); } .person .grow { flex:1; }
-    .rank { width:30px; text-align:center; font-weight:800; color:var(--muted); }
-    .rank.top { color:var(--accent); font-size:18px; }
-    .highlight { background:rgba(255,181,71,.10); border-radius:10px; padding-left:8px; padding-right:8px; }
-
-    .mission { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid rgba(255,255,255,.06); }
-    .mission:last-child { border-bottom:none; }
-    .check { width:22px; height:22px; border-radius:50%; flex:none; display:grid; place-items:center; font-size:13px; background:var(--card2); color:var(--muted); }
-    .check.done { background:var(--good); color:#06340f; }
-    .mission .mt { flex:1; font-size:14px; } .mission .mr { font-size:12px; color:var(--accent); }
-    .dayhdr { font-size:12px; color:var(--muted); margin:14px 0 4px; font-weight:700; }
-    .empty { color:var(--muted); font-size:14px; text-align:center; padding:10px 0; }
-
-    /* Форма / ссылки */
-    .field { margin-bottom:10px; }
-    .field label { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
-    .field input { width:100%; background:var(--card2); border:1px solid rgba(255,255,255,.08); color:var(--text); border-radius:10px; padding:11px; font-size:15px; }
-    .btn { width:100%; border:none; border-radius:12px; padding:13px; font-size:16px; font-weight:700; cursor:pointer;
-      background:linear-gradient(135deg,#ff6b6b,#ffb547); color:#2a1a00; margin-top:6px; }
-    .btn.secondary { background:var(--card2); color:var(--text); }
-    .linkbox { display:flex; gap:8px; margin-top:8px; }
-    .linkbox input { flex:1; background:var(--card2); border:1px solid rgba(255,255,255,.08); color:var(--accent); border-radius:10px; padding:10px; font-size:13px; }
-    .linkbox button { border:none; border-radius:10px; padding:0 16px; font-weight:700; cursor:pointer; background:var(--accent); color:#2a1a00; }
-    .msg { font-size:13px; margin-top:8px; text-align:center; }
-    .msg.err { color:var(--accent2); } .msg.ok { color:var(--good); }
-
-    .invite-hero { text-align:center; padding:26px 18px; }
-    .invite-hero .em { font-size:52px; }
-    .invite-hero h1 { font-size:22px; margin:8px 0 4px; }
-    .invite-hero p { color:var(--muted); font-size:14px; }
-    .inviter { display:inline-flex; align-items:center; gap:10px; background:var(--card2); border-radius:14px; padding:10px 16px; margin-top:14px; }
-    .inviter .in { font-weight:700; } .inviter .ir { font-size:12px; color:var(--muted); }
-
-    .nav { position:fixed; bottom:0; left:0; right:0; background:rgba(20,24,50,.95); backdrop-filter:blur(8px);
-      border-top:1px solid rgba(255,255,255,.08); display:flex; justify-content:space-around; padding:8px 0 10px; }
-    .nav.hidden { display:none; }
-    .nav button { background:none; border:none; color:var(--muted); font-size:11px; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; padding:4px 10px; }
-    .nav button .ico { font-size:20px; } .nav button.active { color:var(--accent); }
+    :root{--bg:#F5F5F5;--card:#FFFFFF;--card2:#F1ECE1;--ink:#2F2F2F;--muted:#8c877e;--red:#9A0404;--gold:#D0A04C;--gold-ink:#9a7326;--gold-deep:#b3852f;--cream:#FFF4DF;--good:#2e7d32;--line:#e7e1d4;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;padding-bottom:78px;}
+    .wrap{max-width:520px;margin:0 auto;padding:14px;}
+    .brand{display:flex;align-items:center;gap:11px;padding:4px 2px 12px;}
+    .brand .medal{width:52px;height:52px;display:grid;place-items:center;} .brand .medal img{width:52px;height:52px;object-fit:contain;}
+    .brand .bt{font-weight:800;font-size:15px;letter-spacing:.6px;color:var(--ink);line-height:1.05;} .brand .bt b{color:var(--gold-deep);} .brand .bs{font-size:11px;color:var(--muted);margin-top:2px;}
+    .switcher{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 12px;display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+    .switcher label{font-size:12px;color:var(--muted);white-space:nowrap;} .switcher select{flex:1;background:var(--card2);color:var(--ink);border:none;border-radius:8px;padding:8px;font-size:14px;}
+    .hero{border-radius:20px;padding:18px;box-shadow:0 6px 20px rgba(0,0,0,.06);position:relative;overflow:hidden;}
+    .hero{min-height:118px;padding-right:150px;}
+    .hero::after{content:"";position:absolute;right:0;bottom:-8px;width:165px;height:150px;background-size:contain;background-repeat:no-repeat;background-position:bottom right;opacity:.92;z-index:0;pointer-events:none;}
+    .hero.NEWBIE::after{background-image:url(/assets/dragon-newbie.png);}
+    .hero.DIRECTOR::after{background-image:url(/assets/dragon-director.png);}
+    .hero.NATIONAL::after{background-image:url(/assets/dragon-national.png);}
+    .hero.ORGANIZER::after{background-image:url(/assets/dragon-organizer.png);}
+    .hero>*{position:relative;z-index:1;}
+    .hero.NEWBIE{background:linear-gradient(135deg,#FFF9F0,#FCEDEA);color:var(--ink);} .hero.DIRECTOR{background:linear-gradient(135deg,#E9CB86,#D0A04C);color:#3d2c09;}
+    .hero.NATIONAL{background:linear-gradient(135deg,#242021,#6e0a0a);color:#F1D79A;} .hero.ORGANIZER{background:linear-gradient(135deg,#3a3a3a,#1c1c1c);color:var(--gold);}
+    .hero .role{display:inline-block;background:rgba(0,0,0,.12);padding:3px 12px;border-radius:20px;font-size:12px;font-weight:700;} .hero.NATIONAL .role,.hero.ORGANIZER .role{background:rgba(255,255,255,.18);}
+    .hero .name{font-size:23px;font-weight:800;margin:5px 0 6px;} .hero .drg{margin-top:8px;font-size:15px;font-weight:800;background:rgba(0,0,0,.10);display:inline-block;padding:6px 14px;border-radius:12px;} .hero.NATIONAL .drg,.hero.ORGANIZER .drg{background:rgba(255,255,255,.15);}
+    .today{background:rgba(0,0,0,.10);border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;display:inline-block;margin-top:6px;} .hero.NATIONAL .today,.hero.ORGANIZER .today{background:rgba(255,255,255,.15);}
+    .card{background:var(--card);border-radius:16px;padding:16px;margin-top:14px;border:1px solid var(--line);box-shadow:0 2px 10px rgba(0,0,0,.03);}
+    .card h2{font-size:14px;color:var(--ink);margin-bottom:12px;font-weight:800;border-left:3px solid var(--gold);padding-left:9px;}
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+    .metric{background:var(--card2);border-radius:12px;padding:10px 6px;text-align:center;} .metric .n{font-size:22px;font-weight:800;color:var(--ink);} .metric .l{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.2;}
+    .btn{border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;background:var(--card2);color:var(--ink);width:100%;}
+    .btn.primary{background:linear-gradient(135deg,#E0B75F,#CE9A3F);color:#3d2c09;} .btn.green{background:var(--good);color:#fff;} .btn.gray{background:var(--card2);color:var(--muted);}
+    .row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);} .row:last-child{border-bottom:none;}
+    .person{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);} .person:last-child{border-bottom:none;}
+    .avatar{width:38px;height:38px;border-radius:50%;background:var(--cream);display:grid;place-items:center;font-size:17px;flex:none;}
+    .person .grow{flex:1;} .person .pn{font-weight:700;font-size:14px;} .person .drg{color:var(--gold-ink);font-weight:800;font-size:13px;}
+    .mini{display:flex;gap:9px;font-size:11px;color:var(--muted);margin-top:3px;flex-wrap:wrap;} .mini b{color:var(--ink);}
+    .totrow{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center;} .totrow .t{background:var(--card2);border-radius:10px;padding:8px 4px;} .totrow .t .n{font-size:17px;font-weight:800;} .totrow .t .l{font-size:9px;color:var(--muted);}
+    .pend{background:var(--card2);border-radius:12px;padding:12px;margin-bottom:8px;} .pend .top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px;}
+    .pend .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;} .pend .acts button{border:none;border-radius:10px;padding:9px;font-weight:700;cursor:pointer;font-size:13px;}
+    .linkbox{display:flex;gap:8px;margin-top:8px;} .linkbox input{flex:1;background:var(--card2);border:1px solid var(--line);color:var(--gold-ink);border-radius:10px;padding:9px;font-size:12px;} .linkbox button{border:none;border-radius:10px;padding:0 14px;font-weight:700;cursor:pointer;background:var(--gold-deep);color:#fff;}
+    .empty{color:var(--muted);font-size:13px;text-align:center;padding:8px 0;} .badge{background:var(--gold-deep);color:#fff;border-radius:10px;padding:1px 8px;font-size:12px;margin-left:6px;}
+    .rank{width:30px;text-align:center;font-weight:800;color:var(--muted);} .rank.top{color:var(--gold-ink);font-size:17px;} .hl{background:rgba(208,160,76,.16);border-radius:10px;padding-left:6px;padding-right:6px;}
+    .dayitem{display:flex;align-items:center;gap:12px;padding:12px;background:var(--card2);border-radius:12px;margin-bottom:8px;cursor:pointer;} .dayitem.locked{opacity:.5;cursor:default;} .dayitem.now{outline:2px solid var(--gold);}
+    .daynum{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#E0B75F,#CE9A3F);color:#3d2c09;display:grid;place-items:center;font-weight:800;flex:none;} .dayitem .dt{font-weight:700;font-size:14px;} .dayitem .dm{font-size:11px;color:var(--muted);margin-top:2px;}
+    .back{color:var(--gold-ink);cursor:pointer;font-size:14px;margin-bottom:10px;display:inline-block;font-weight:700;}
+    .video{background:var(--card2);border:1px dashed var(--gold);border-radius:12px;padding:14px;text-align:center;margin-bottom:8px;color:var(--muted);font-size:13px;} .video b{color:var(--ink);display:block;margin-top:4px;}
+    .li{padding:6px 0;font-size:14px;padding-left:18px;position:relative;} .li:before{content:"•";position:absolute;left:2px;color:var(--gold-ink);}
+    .chk{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer;font-size:14px;} .chk:last-child{border-bottom:none;}
+    .box{width:22px;height:22px;border-radius:7px;background:var(--card2);border:1px solid var(--line);flex:none;display:grid;place-items:center;font-size:13px;color:transparent;} .chk.on .box{background:var(--good);color:#fff;border-color:var(--good);} .chk.on span{color:var(--muted);text-decoration:line-through;}
+    .plan{background:rgba(208,160,76,.15);color:var(--gold-ink);border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;margin:10px 0;}
+    .numgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;} .numf label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px;}
+    .numf input{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px;font-size:16px;text-align:center;}
+    .note{font-size:11px;color:var(--muted);margin-top:6px;}
+    .field{margin-bottom:10px;} .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px;} .field input{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:11px;font-size:15px;}
+    .msg{font-size:13px;margin-top:8px;text-align:center;} .msg.ok{color:var(--good);} .msg.err{color:var(--red);}
+    .dg{display:inline-block;vertical-align:-3px;width:15px;height:15px;}
+    .nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:7px 0 9px;box-shadow:0 -2px 12px rgba(0,0,0,.05);}
+    .nav button{background:none;border:none;color:var(--muted);font-size:10px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:3px 6px;} .nav button .ico{font-size:18px;} .nav button.active{color:var(--gold-ink);} .nav.hidden{display:none;}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div id="root"><div class="empty">Загрузка…</div></div>
+    <div class="brand"><div class="medal"><img src="/assets/logo-red.png" alt="Золотые Драконы"></div><div><div class="bt">ЗОЛОТЫЕ <b>ДРАКОНЫ</b></div><div class="bs">«Лёгкий старт» · бизнес-академия</div></div></div>
+    <div class="switcher"><label>Смотреть как:</label><select id="userSelect"></select></div>
+    <div id="screen"><div class="empty">Загрузка…</div></div>
   </div>
-
-  <div class="nav" id="nav">
-    <button data-tab="home" class="active"><span class="ico">🏠</span>Главная</button>
-    <button data-tab="team"><span class="ico">👥</span>Команда</button>
-    <button data-tab="rating"><span class="ico">🏆</span>Рейтинг</button>
-    <button data-tab="profile"><span class="ico">👤</span>Профиль</button>
-  </div>
-
+  <div class="nav" id="nav"></div>
   <script>
-    const root = document.getElementById("root");
-    const nav = document.getElementById("nav");
-    let currentUserId = null, currentTab = "home", cabinet = null;
+    let currentId=null,cabinet=null,program=[],dirDays=[],today=0,currentTab=null,selectedDay=null;
+    const DRAGON='<svg class="dg" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="7.5" fill="#D0A04C"/><circle cx="12" cy="13" r="7.5" stroke="#9a7326" stroke-width="1"/><path d="M6.6 6l1.7 2 3.2-2.4 3.2 2.4 1.7-2-.9 4H7.5z" fill="#efd49a"/><circle cx="12" cy="13.4" r="1.4" fill="#8a5f16"/></svg>';
+    const TABS={
+      NEWBIE:[["home","🏠","Главная"],["program","📚","Программа"],["rating","🏆","Рейтинг"],["profile","👤","Профиль"]],
+      DIRECTOR:[["team","👥","Команда"],["dirprog","📋","Миссия"],["confirm","⏳","Проверка"],["rating","🏆","Рейтинг"],["invite","🔗","Ссылка"]],
+      NATIONAL:[["structure","🏢","Структура"],["natprog","📋","Миссия"],["rating","🏆","Рейтинг"],["invite","🔗","Ссылки"]],
+      ORGANIZER:[["overview","🌍","Обзор"],["rating","🏆","Рейтинг"]],
+    };
+    async function start(){
+      const code=new URLSearchParams(location.search).get("ref");
+      if(code&&!localStorage.getItem("firstRef")&&!localStorage.getItem("myUserId"))localStorage.setItem("firstRef",code);
+      if(localStorage.getItem("firstRef")&&!localStorage.getItem("myUserId")){showInvite(localStorage.getItem("firstRef"));return;}
+      const pg=await (await fetch("/api/program")).json(); program=pg.days; today=pg.currentDay;
+      dirDays=(await (await fetch("/api/program-director")).json()).days;
+      const users=await (await fetch("/api/users")).json();
+      const sel=document.getElementById("userSelect");const myId=localStorage.getItem("myUserId");
+      currentId=(myId&&users.some(u=>u.id===myId))?myId:users[0].id;
+      sel.innerHTML=users.map(u=>`<option value="${u.id}" ${u.id===currentId?"selected":""}>${u.name} — ${u.role}</option>`).join("");
+      sel.onchange=()=>{currentId=sel.value;selectedDay=null;currentTab=null;load();};
+      load();
+    }
+    async function load(){cabinet=await (await fetch("/api/cabinet/"+currentId)).json();if(!currentTab)currentTab=TABS[cabinet.role][0][0];render();}
+    async function showInvite(code){document.querySelector(".switcher").style.display="none";document.getElementById("nav").classList.add("hidden");
+      const s=document.getElementById("screen");let inv=null;try{const r=await fetch("/api/referrer/"+encodeURIComponent(code));if(r.ok)inv=await r.json();}catch(e){}
+      if(!inv){s.innerHTML=`<div class="card empty">Ссылка недействительна.<br><br><button class="btn" onclick="clearRef()">Открыть приложение</button></div>`;return;}
+      s.innerHTML=`<div class="hero NEWBIE"><div class="role">Приглашение</div><div class="name">Добро пожаловать!</div><div>Тебя пригласил <b>${inv.name}</b> (${inv.role}).<br>Ты войдёшь как: <b>${inv.invitedAsRole}</b>.</div></div>
+        <div class="card"><h2>Присоединиться</h2><div class="field"><label>Имя *</label><input id="f_first"></div><div class="field"><label>Фамилия</label><input id="f_last"></div>
+        <button class="btn primary" onclick="register('${code}')">Присоединиться</button><div id="regmsg" class="msg"></div></div>`;}
+    async function register(code){const fn=document.getElementById("f_first").value.trim();const m=document.getElementById("regmsg");if(!fn){m.className="msg err";m.textContent="Впиши имя";return;}
+      const r=await fetch("/api/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({firstName:fn,lastName:document.getElementById("f_last").value.trim(),code})});
+      const d=await r.json();if(!r.ok){m.className="msg err";m.textContent=d.error;return;}localStorage.setItem("myUserId",d.id);localStorage.removeItem("firstRef");setTimeout(()=>location.href="/",500);}
+    function clearRef(){localStorage.removeItem("firstRef");location.href="/";}
+    async function confirmItem(id,a){const body={submissionId:id,approve:a};
+      if(a){const c=document.getElementById("c_"+id),dd=document.getElementById("d_"+id);if(c&&dd){body.conducted=+c.value||0;body.deals=+dd.value||0;}}
+      await fetch("/api/confirm",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});load();}
+    async function submitDay(day,entry){const b={userId:currentId,day};if(entry){b.calls=+document.getElementById("in_calls").value||0;b.assigned=+document.getElementById("in_assigned").value||0;b.conducted=+document.getElementById("in_conducted").value||0;b.deals=+document.getElementById("in_deals").value||0;}
+      await fetch("/api/submit-day",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)});selectedDay=null;currentTab="home";load();}
+    function copyLink(i){const el=document.getElementById(i);el.select();navigator.clipboard.writeText(el.value);}
+    function goTab(t){currentTab=t;selectedDay=null;render();} function openDay(n){selectedDay=n;render();} function toggleChk(el){el.classList.toggle("on");}
 
-    // ===== Точка входа: приглашение или приложение? =====
-    async function start() {
-      const urlRef = new URLSearchParams(location.search).get("ref");
-      // "Первое касание": запоминаем самый первый код, пока человек не зарегистрирован
-      if (urlRef && !localStorage.getItem("firstRef") && !localStorage.getItem("myUserId")) {
-        localStorage.setItem("firstRef", urlRef);
-      }
-      const pendingRef = localStorage.getItem("firstRef");
-      if (pendingRef && !localStorage.getItem("myUserId")) {
-        showInvite(pendingRef);
-      } else {
-        showApp();
-      }
+    const tiles=(m)=>`<div class="metrics"><div class="metric"><div class="n">${m.calls}</div><div class="l">📞 Звонки</div></div><div class="metric"><div class="n">${m.assigned}</div><div class="l">🗓️ Назначено</div></div><div class="metric"><div class="n">${m.conducted}</div><div class="l">🤝 Проведено</div></div><div class="metric"><div class="n">${m.deals}</div><div class="l">💰 Сделки</div></div></div>`;
+    const totals=(t)=>`<div class="totrow"><div class="t"><div class="n">${t.calls}</div><div class="l">📞</div></div><div class="t"><div class="n">${t.assigned}</div><div class="l">🗓️</div></div><div class="t"><div class="n">${t.conducted}</div><div class="l">🤝</div></div><div class="t"><div class="n">${t.deals}</div><div class="l">💰</div></div><div class="t"><div class="n">${t.dragons}</div><div class="l">🐉</div></div></div>`;
+    const prow=(p)=>`<div class="person"><div class="avatar">🧑</div><div class="grow"><div class="pn">${p.name} <span class="mini" style="display:inline">· День ${p.currentDay}</span></div><div class="mini"><span>📞<b>${p.metrics.calls}</b></span><span>🗓️<b>${p.metrics.assigned}</b></span><span>🤝<b>${p.metrics.conducted}</b></span><span>💰<b>${p.metrics.deals}</b></span></div></div><div class="drg">${p.dragons} 🐉</div></div>`;
+
+    async function render(){const s=document.getElementById("screen");const d=cabinet;
+      document.getElementById("nav").innerHTML=TABS[d.role].map(([id,ic,lb])=>`<button class="${id===currentTab?"active":""}" onclick="goTab('${id}')"><span class="ico">${ic}</span>${lb}</button>`).join("");
+      let h="";const R=d.role;
+      if(R==="NEWBIE"){h=currentTab==="home"?newbieHome(d):currentTab==="program"?(selectedDay===null?progList(program,"program"):progDetailNewbie(selectedDay)):currentTab==="rating"?await ratingView(d):newbieProfile(d);}
+      else if(R==="DIRECTOR"){h=currentTab==="team"?dirTeam(d):currentTab==="dirprog"?(selectedDay===null?progList(dirDays,"dirprog"):progDetailChecklist(dirDays,selectedDay,"Чек-лист директора")):currentTab==="confirm"?dirConfirm(d):currentTab==="rating"?await ratingView(d):inviteDir(d);}
+      else if(R==="NATIONAL"){h=currentTab==="structure"?natStructure(d):currentTab==="natprog"?natProgram(d):currentTab==="rating"?await ratingView(d):inviteNat(d);}
+      else{h=currentTab==="overview"?orgOverview(d):await ratingView(d);}
+      s.innerHTML=h.split("🐉").join(DRAGON);
     }
 
-    // ===== Экран ПРИГЛАШЕНИЯ + регистрация =====
-    async function showInvite(code) {
-      nav.classList.add("hidden");
-      let inviter = null;
-      try {
-        const r = await fetch("/api/referrer/" + encodeURIComponent(code));
-        if (r.ok) inviter = await r.json();
-      } catch (e) {}
+    // NEWBIE
+    function newbieHome(d){return `<div class="hero NEWBIE"><span class="role">${d.me.roleLabel}</span><div class="name">${d.me.name}</div><div class="drg">🐉 ${d.me.dragons} Драконов</div><div class="today">📅 Сегодня День ${d.currentDay}</div></div>
+      <div class="card"><h2>Мои действия за запуск</h2>${tiles(d.me.metrics)}</div>
+      ${d.pendingMine.length?`<div class="card"><h2>Ждёт подтверждения директора</h2>${d.pendingMine.map(p=>`<div class="row"><span>День ${p.day}: 🤝 ${p.conducted} · 💰 ${p.deals}</span><span class="empty" style="padding:0">на проверке ⏳</span></div>`).join("")}</div>`:""}
+      <div class="card"><button class="btn primary" onclick="currentTab='program';selectedDay=${d.currentDay};render()">📊 Подвести итоги дня ${d.currentDay}</button><div class="note">Впишешь цифры дня — Драконы посчитаются автоматически.</div></div>`;}
+    function newbieProfile(d){return `<div class="hero NEWBIE"><span class="role">${d.me.roleLabel}</span><div class="name">${d.me.name}</div></div>
+      <div class="card"><h2>Мой директор</h2>${d.referrer?`<div class="person"><div class="avatar">👤</div><div class="grow"><div class="pn">${d.referrer.name}</div><div class="mini">${d.referrer.role}</div></div></div>`:'<div class="empty">—</div>'}
+      <button class="btn gray" style="margin-top:10px" onclick="alert('Здесь будет ссылка на Telegram-чат с директором')">💬 Связаться с директором</button>
+      <button class="btn gray" style="margin-top:8px" onclick="alert('Здесь будет ссылка на общий чат «Точка роста»')">💬 Общий чат «Точка роста»</button></div>
+      <div class="card empty">У новичка своей реферальной ссылки нет — цепочка приглашений заканчивается на тебе.</div>`;}
+    function progDetailNewbie(n){const day=program.find(x=>x.day===n);return `<span class="back" onclick="goTab('program')">‹ Все дни</span>
+      <div class="hero NEWBIE"><span class="role">День ${day.day}</span><div class="name">${day.title}</div><div style="font-size:14px;margin-top:4px">«${day.motto}»</div></div>
+      ${day.plan?`<div class="plan">🎯 ${day.plan}</div>`:""}
+      ${day.videos.length?`<div class="card"><h2>Видеоуроки</h2>${day.videos.map(v=>`<div class="video">🎥<b>${v}</b>видео появится здесь</div>`).join("")}</div>`:""}
+      <div class="card"><h2>Миссия дня</h2>${day.mission.map(x=>`<div class="li">${x}</div>`).join("")}</div>
+      <div class="card"><h2>Подведение итогов дня</h2>
+      ${day.entry?`<div class="note" style="margin-bottom:10px">Впиши цифры за сегодня — звонки ×5, встречи ×50, сделки ×100. Встречи и сделки уйдут директору на подтверждение.</div>
+        <div class="numgrid"><div class="numf"><label>📞 Звонков</label><input id="in_calls" type="number" min="0" value="0"></div><div class="numf"><label>🗓️ Назначено встреч</label><input id="in_assigned" type="number" min="0" value="0"></div>
+        <div class="numf"><label>🤝 Проведено встреч</label><input id="in_conducted" type="number" min="0" value="0"></div><div class="numf"><label>💰 Сделок</label><input id="in_deals" type="number" min="0" value="0"></div></div>`:""}
+      ${day.checklist.map(x=>`<div class="chk" onclick="toggleChk(this)"><div class="box">✓</div><span>${x}</span></div>`).join("")}
+      <button class="btn primary" style="margin-top:12px" onclick="submitDay(${day.day},${day.entry})">📊 Отправить итоги дня (+10 🐉)</button></div>`;}
 
-      if (!inviter) {
-        root.innerHTML = `
-          <div class="card invite-hero">
-            <div class="em">🤔</div>
-            <h1>Ссылка недействительна</h1>
-            <p>Код приглашения «${code}» не найден.</p>
-            <button class="btn secondary" onclick="clearRefAndOpen()">Открыть приложение</button>
-          </div>`;
-        return;
-      }
+    // ПРОГРАММА (список) — общий для новичка/директора
+    function progList(days,tab){return `<div class="card"><h2>${tab==="dirprog"?"Программа директора — 10 дней":"Программа «Точка роста» — 10 дней"}</h2>
+      ${days.map(day=>`<div class="dayitem ${day.locked?"locked":""} ${day.day===today?"now":""}" ${day.locked?"":`onclick="openDay(${day.day})"`}>
+        <div class="daynum">${day.day}</div><div class="grow"><div class="dt">День ${day.day}. ${day.title}</div><div class="dm">${day.locked?"🔒 откроется позже":(day.motto||"нажми, чтобы открыть")}</div></div>${day.locked?"":"›"}</div>`).join("")}
+      <div class="empty" style="margin-top:8px">Дни открываются по общему старту, утром в заданный час по Москве.</div></div>`;}
+    function progDetailChecklist(days,n,head){const day=days.find(x=>x.day===n);return `<span class="back" onclick="goTab('dirprog')">‹ Все дни</span>
+      <div class="hero DIRECTOR"><span class="role">День ${day.day}</span><div class="name">${day.title}</div></div>
+      <div class="card"><h2>${head}</h2>${day.checklist.map(x=>`<div class="chk" onclick="toggleChk(this)"><div class="box">✓</div><span>${x}</span></div>`).join("")}</div>`;}
 
-      root.innerHTML = `
-        <div class="card invite-hero">
-          <div class="em">🐉</div>
-          <h1>Добро пожаловать в «Лёгкий старт»!</h1>
-          <p>10 дней — и ты бизнес-партнёр Whieda.</p>
-          <div class="inviter">
-            <div class="avatar">👤</div>
-            <div style="text-align:left"><div class="in">Тебя пригласил ${inviter.name}</div><div class="ir">${inviter.role}</div></div>
-          </div>
-        </div>
-        <div class="card">
-          <h2>Присоединиться</h2>
-          <div class="field"><label>Имя *</label><input id="f_first" placeholder="Например, Анна"></div>
-          <div class="field"><label>Фамилия</label><input id="f_last" placeholder="Смирнова"></div>
-          <div class="field"><label>Email</label><input id="f_email" type="email" placeholder="anna@mail.ru"></div>
-          <button class="btn" onclick="register('${code}')">Присоединиться к команде</button>
-          <div id="regmsg" class="msg"></div>
-        </div>`;
-    }
+    // РЕЙТИНГ
+    async function ratingView(d){const teams=await (await fetch("/api/rating/teams")).json();
+      const tr=teams.map((t,i)=>`<div class="person ${d.me&&d.me.name===t.name?"hl":""}"><div class="rank ${i<3?"top":""}">${i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}</div><div class="grow"><div class="pn">${t.teamName}</div><div class="mini">${t.name} · 💰 ${t.deals} сделок</div></div><div class="drg">${t.dragons} 🐉</div></div>`).join("");
+      let ex="";
+      if(d.role==="NEWBIE"){const l=await (await fetch("/api/rating/newbies")).json();ex=`<div class="card"><h2>Мой рейтинг</h2><div class="row"><span>Место среди всех новичков</span><span class="drg">${d.rating.position} из ${d.rating.total}</span></div></div><div class="card"><h2>Топ новичков</h2>${l.slice(0,10).map((p,i)=>`<div class="person ${p.name===d.me.name?"hl":""}"><div class="rank ${i<3?"top":""}">${i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}</div><div class="grow"><div class="pn">${p.name}${p.name===d.me.name?" (ты)":""}</div></div><div class="drg">${p.dragons} 🐉</div></div>`).join("")}</div>`;}
+      else if(d.role==="DIRECTOR"){const l=await (await fetch("/api/rating/directors")).json();ex=`<div class="card"><h2>Рейтинг директоров</h2>${l.map((p,i)=>`<div class="person ${p.name===d.me.name?"hl":""}"><div class="rank ${i<3?"top":""}">${i===0?"🥇":i===1?"🥈":i===2?"🥉":i+1}</div><div class="grow"><div class="pn">${p.name}${p.name===d.me.name?" (ты)":""}</div></div><div class="drg">${p.dragons} 🐉</div></div>`).join("")}</div>`;}
+      return `<div class="card"><h2>🏆 Рейтинг команд (виден всем)</h2>${tr}</div>${ex}`;}
 
-    async function register(code) {
-      const firstName = document.getElementById("f_first").value.trim();
-      const msg = document.getElementById("regmsg");
-      if (!firstName) { msg.className = "msg err"; msg.textContent = "Впиши имя"; return; }
-      msg.className = "msg"; msg.textContent = "Создаю кабинет…";
-      try {
-        const r = await fetch("/api/register", {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            firstName,
-            lastName: document.getElementById("f_last").value.trim(),
-            email: document.getElementById("f_email").value.trim(),
-            refCode: code,
-          }),
-        });
-        const d = await r.json();
-        if (!r.ok) { msg.className = "msg err"; msg.textContent = d.error || "Ошибка"; return; }
-        // Успех: "входим" под новым учеником, чистим первое касание
-        localStorage.setItem("myUserId", d.id);
-        localStorage.removeItem("firstRef");
-        msg.className = "msg ok"; msg.textContent = "Готово! Открываю кабинет…";
-        setTimeout(() => { location.href = "/"; }, 700);
-      } catch (e) { msg.className = "msg err"; msg.textContent = "Сервер недоступен"; }
-    }
+    // ДИРЕКТОР
+    function dirTeam(d){return `<div class="hero DIRECTOR"><span class="role">${d.me.roleLabel}</span><div class="name">${d.me.name}</div><div class="today">📅 Команда сегодня на Дне ${d.currentDay}</div></div>
+      <div class="card"><h2>Итог по моей команде (${d.newbies.length} новичков)</h2>${totals(d.teamTotals)}<div class="mini" style="margin-top:8px;justify-content:center">📞 звонки · 🗓️ назнач. · 🤝 провед. · 💰 сделки · 🐉 драконы</div></div>
+      <div class="card"><h2>Мои новички (видно, кто на каком дне)</h2>${d.newbies.length?d.newbies.map(prow).join(""):'<div class="empty">Пока никого</div>'}</div>`;}
+    function dirConfirm(d){const q=d.pending.length?d.pending.map(p=>`<div class="pend"><div class="top"><span><b>${p.newbieName}</b> · День ${p.day}</span></div>
+      <div class="numgrid" style="margin-bottom:8px"><div class="numf"><label>🤝 Проведено встреч (×50 🐉)</label><input id="c_${p.id}" type="number" min="0" value="${p.conducted}"></div><div class="numf"><label>💰 Сделок (×100 🐉)</label><input id="d_${p.id}" type="number" min="0" value="${p.deals}"></div></div>
+      <div class="acts"><button class="btn green" onclick="confirmItem('${p.id}',true)">✅ Подтвердить</button><button class="btn gray" onclick="confirmItem('${p.id}',false)">✖ Отклонить</button></div></div>`).join(""):`<div class="empty">Пока нечего подтверждать 👍</div>`;
+      return `<div class="card"><h2>На подтверждение ${d.pending.length?`<span class="badge">${d.pending.length}</span>`:""}</h2><div class="note" style="margin-bottom:10px">Новичок прислал цифры. Если что-то не так — <b>исправь прямо в полях</b>, потом жми «Подтвердить». Драконы начислятся по этим цифрам.</div>${q}</div>`;}
+    function inviteDir(d){const link=`${location.origin}/?ref=${d.me.refCode}`;return `<div class="card"><h2>Моя ссылка для приглашения новичков</h2><div class="empty" style="text-align:left">Перешедший станет твоим новичком.</div><div class="linkbox"><input id="dlink" value="${link}" readonly><button onclick="copyLink('dlink')">Копировать</button></div></div>`;}
 
-    function clearRefAndOpen() { localStorage.removeItem("firstRef"); location.href = "/"; }
+    // НАЦИОНАЛЬНЫЙ
+    function dirBlock(dir,key){return `<div class="card" style="background:var(--card2)"><div style="cursor:pointer" onclick="var e=document.getElementById('${key}');e.style.display=e.style.display==='none'?'block':'none'">
+      <div class="row"><span><b>${dir.name}</b> · Директор</span><span class="drg">${dir.totals.dragons} 🐉 ▾</span></div>
+      <div class="mini" style="margin-top:2px"><span>📞<b>${dir.totals.calls}</b></span><span>🗓️<b>${dir.totals.assigned}</b></span><span>🤝<b>${dir.totals.conducted}</b></span><span>💰<b>${dir.totals.deals}</b></span><span>👥<b>${dir.newbies.length}</b></span></div></div>
+      <div id="${key}" style="display:none;margin-top:8px">${dir.newbies.length?dir.newbies.map(prow).join(""):'<div class="empty">Нет новичков</div>'}</div></div>`;}
+    function natStructure(d){return `<div class="hero NATIONAL"><span class="role">${d.me.roleLabel}</span><div class="name">${d.me.name}</div><div style="font-size:13px;margin-top:4px">${d.me.teamName} · День ${d.currentDay}</div></div>
+      <div class="card"><h2>Итог по всей структуре</h2>${totals(d.grandTotals)}</div>
+      <div class="card"><h2>Мои директоры (${d.directors.length}) — нажми, чтобы раскрыть новичков</h2>${d.directors.map((dir,i)=>dirBlock(dir,"nd"+i)).join("")||'<div class="empty">Нет</div>'}</div>
+      <div class="card"><h2>Мои личные новички (${d.ownNewbies.length})</h2>${d.ownNewbies.length?d.ownNewbies.map(prow).join(""):'<div class="empty">Нет</div>'}</div>`;}
+    function natProgram(d){return `<div class="hero NATIONAL"><span class="role">${d.me.roleLabel}</span><div class="name">Миссия дня ${d.currentDay}</div></div>
+      <div class="card"><h2>Твой фокус как Национального</h2>
+      <div class="li">Поддержи своих директоров — будь на связи</div><div class="li">Будь на эфирах, собирай команду</div><div class="li">Мотивируй в общем и командном чате</div><div class="li">Подключайся к сложным встречам (усиление)</div><div class="li">Следи за структурой и рейтингом команд</div>
+      <div class="note">Детальный сценарий Национального добавим, когда пришлёшь его отдельно.</div></div>`;}
+    function inviteNat(d){const lD=`${location.origin}/?ref=${d.me.refCodes.director}`,lN=`${location.origin}/?ref=${d.me.refCodes.newbie}`;return `
+      <div class="card"><h2>🔗 Пригласить Директора</h2><div class="empty" style="text-align:left">Перешедший станет Директором в твоей команде.</div><div class="linkbox"><input id="lD" value="${lD}" readonly><button onclick="copyLink('lD')">Копировать</button></div></div>
+      <div class="card"><h2>🔗 Пригласить своего Новичка</h2><div class="empty" style="text-align:left">Перешедший станет твоим личным новичком.</div><div class="linkbox"><input id="lN" value="${lN}" readonly><button onclick="copyLink('lN')">Копировать</button></div></div>`;}
 
-    // ===== Приложение (вкладки + переключатель) =====
-    async function showApp() {
-      nav.classList.remove("hidden");
-      const users = await (await fetch("/api/users")).json();
-      const myId = localStorage.getItem("myUserId");
-      currentUserId = (myId && users.some(u => u.id === myId)) ? myId : users[0].id;
-      const options = users.map(u => `<option value="${u.id}" ${u.id===currentUserId?"selected":""}>${u.name} — ${u.role}</option>`).join("");
-      root.innerHTML = `
-        <div class="switcher"><label>Смотреть как:</label><select id="userSelect">${options}</select></div>
-        <div id="screen"></div>`;
-      document.getElementById("userSelect").onchange = (e) => { currentUserId = e.target.value; loadCabinet(); };
-      loadCabinet();
-    }
-
-    async function loadCabinet() {
-      cabinet = await (await fetch("/api/cabinet/" + currentUserId)).json();
-      render();
-    }
-
-    function viewHome(d) {
-      const history = d.dragonHistory.map(t => `<div class="row"><span>${t.reason}</span><span class="plus">+${t.amount} 🐉</span></div>`).join("");
-      const done = new Set(d.completedMissionIds);
-      const program = d.program.map(day => {
-        if (!day.missions.length) return "";
-        const items = day.missions.map(m => `<div class="mission"><span class="check ${done.has(m.id)?"done":""}">${done.has(m.id)?"✓":""}</span><span class="mt">${m.title}</span><span class="mr">+${m.reward}</span></div>`).join("");
-        return `<div class="dayhdr">${day.title}</div>${items}`;
-      }).join("");
-      return `
-        <div class="hero"><div class="hi">Добро пожаловать в «Лёгкий старт»</div>
-          <div class="name">${d.me.name}</div><span class="role">${d.me.role}</span>
-          <div class="dragons"><span style="font-size:30px">🐉</span><div><div class="num">${d.me.dragons}</div><div class="lbl">Драконов — твои баллы</div></div></div>
-        </div>
-        <div class="card"><h2>История Драконов</h2>${history || '<div class="empty">Пока пусто</div>'}</div>
-        <div class="card"><h2>Программа и миссии</h2>${program}</div>`;
-    }
-
-    function viewTeam(d) {
-      const up = d.referrer ? `<div class="card"><h2>Твой наставник</h2><div class="referrer"><div class="avatar">👤</div><div><div class="rn">${d.referrer.name}</div><div class="rr">${d.referrer.role}</div></div></div></div>` : "";
-      const team = d.team.length ? d.team.map(p => `<div class="person"><div class="avatar">🧑</div><div class="grow"><div class="pn">${p.name}</div><div class="pr">${p.role}</div></div><div class="drg">${p.dragons} 🐉</div></div>`).join("")
-        : '<div class="empty">Ты пока никого не пригласил.<br>Скопируй свою ссылку во вкладке «Профиль».</div>';
-      return `${up}<div class="card"><h2>Моя команда (${d.team.length})</h2>${team}</div>`;
-    }
-
-    async function viewRating(d) {
-      const list = await (await fetch("/api/rating")).json();
-      const rows = list.map((p, i) => {
-        const medal = i===0?"🥇":i===1?"🥈":i===2?"🥉":(i+1);
-        const isMe = p.name === d.me.name;
-        return `<div class="person ${isMe?"highlight":""}"><div class="rank ${i<3?"top":""}">${medal}</div><div class="grow"><div class="pn">${p.name}${isMe?" (ты)":""}</div><div class="pr">${p.role}</div></div><div class="drg">${p.dragons} 🐉</div></div>`;
-      }).join("");
-      return `<div class="card"><h2>Рейтинг по Драконам</h2>${rows}</div>`;
-    }
-
-    function viewProfile(d) {
-      const link = d.me.refCode ? `${location.origin}/?ref=${d.me.refCode}` : "";
-      const linkBlock = link ? `
-        <div class="card"><h2>Моя ссылка для приглашений</h2>
-          <p class="ir" style="color:var(--muted);font-size:13px">Кто перейдёт по ней и зарегистрируется — попадёт в твою команду.</p>
-          <div class="linkbox"><input id="mylink" value="${link}" readonly><button onclick="copyLink()">Копировать</button></div>
-          <div id="copymsg" class="msg"></div>
-        </div>` : "";
-      return `
-        <div class="hero" style="background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff"><div class="name">${d.me.name}</div><span class="role">${d.me.role}</span></div>
-        <div class="card"><h2>О тебе</h2>
-          <div class="row"><span>Роль</span><span>${d.me.role}</span></div>
-          <div class="row"><span>Баллы</span><span class="drg">${d.me.dragons} 🐉</span></div>
-          <div class="row"><span>Наставник</span><span>${d.referrer ? d.referrer.name : "—"}</span></div>
-          <div class="row"><span>В команде</span><span>${d.team.length} чел.</span></div>
-        </div>
-        ${linkBlock}`;
-    }
-
-    function copyLink() {
-      const inp = document.getElementById("mylink");
-      inp.select(); navigator.clipboard.writeText(inp.value);
-      const m = document.getElementById("copymsg"); m.className = "msg ok"; m.textContent = "Ссылка скопирована ✓";
-    }
-
-    async function render() {
-      const screen = document.getElementById("screen");
-      if (!screen || !cabinet) return;
-      if (currentTab === "home") screen.innerHTML = viewHome(cabinet);
-      if (currentTab === "team") screen.innerHTML = viewTeam(cabinet);
-      if (currentTab === "profile") screen.innerHTML = viewProfile(cabinet);
-      if (currentTab === "rating") screen.innerHTML = await viewRating(cabinet);
-    }
-
-    document.querySelectorAll(".nav button").forEach(btn => {
-      btn.onclick = () => {
-        document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active"); currentTab = btn.dataset.tab; render();
-      };
-    });
-
+    // ОРГАНИЗАТОР
+    function orgOverview(d){const teams=d.teams.map((t,ti)=>`<div class="card"><h2>${t.teamName} · ${t.name}</h2>${totals(t.totals)}
+      <div style="margin-top:10px">${t.directors.map((dir,di)=>dirBlock(dir,"o"+ti+"_"+di)).join("")||'<div class="empty">Нет директоров</div>'}</div>
+      ${t.ownNewbies.length?`<div class="note" style="margin-top:8px">Личные новички национального:</div>${t.ownNewbies.map(prow).join("")}`:""}</div>`).join("");
+      return `<div class="hero ORGANIZER"><span class="role">${d.me.roleLabel}</span><div class="name">Обзор всего запуска</div><div class="today">📅 День ${d.currentDay}</div></div>
+      <div class="card"><h2>Итог по всему запуску</h2>${totals(d.globalTotals)}
+        <div class="mini" style="margin-top:8px;justify-content:center">Команд: <b>${d.counts.nationals}</b> · Директоров: <b>${d.counts.directors}</b> · Новичков: <b>${d.counts.newbies}</b> · На подтверждении: <b>${d.counts.pending}</b></div></div>
+      ${teams}`;}
     start();
   </script>
 </body>
