@@ -11,6 +11,10 @@ node_modules/
 *.db
 *.db-journal
 
+# Сохранённые данные и загруженные в чат картинки (создаются на сервере)
+/data/
+/public/uploads/
+
 # Служебный мусор системы
 .DS_Store
 Thumbs.db

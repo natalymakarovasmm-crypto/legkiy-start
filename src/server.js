@@ -9,10 +9,14 @@
 
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: "8mb" })); // 8mb — чтобы принимать скрины в чат
 app.use(express.static(path.join(__dirname, "..", "public")));
 const PORT = process.env.PORT || 3000;
+// Куда сохраняем данные (чтобы не терялись при перезапуске) и картинки чата
+const DATA_FILE = process.env.DATA_FILE || path.join(__dirname, "..", "data", "app-data.json");
+const UPLOAD_DIR = path.join(__dirname, "..", "public", "uploads");
 
 const ROLE_LABELS = { NEWBIE:"Новичок", DIRECTOR:"Директор", NATIONAL:"Национальный директор", ORGANIZER:"Организатор" };
 const roleLabel = (r) => ROLE_LABELS[r] || r;
@@ -29,7 +33,7 @@ function currentDay(){
 const nm = (calls,assigned,conducted,deals,daily)=>({calls,meetingsAssigned:assigned,meetingsConducted:conducted,deals,dailyPoints:daily});
 
 // ---- Участники (2 национальные команды) ----
-const users = [
+let users = [
   { id:"olga", firstName:"Ольга", lastName:"Соколова", role:"NATIONAL", referrerId:null, teamName:"Команда Ольги", codes:{director:"OLGA-DIR",newbie:"OLGA-NEW"}, ...nm(0,0,0,0,0) },
   { id:"ivan", firstName:"Иван", lastName:"Петров", role:"DIRECTOR", referrerId:"olga", codes:{newbie:"IVAN-NEW"}, ...nm(0,0,0,0,0) },
   { id:"sergey", firstName:"Сергей", lastName:"Волков", role:"DIRECTOR", referrerId:"olga", codes:{newbie:"SERGEY-NEW"}, ...nm(0,0,0,0,0) },
@@ -50,6 +54,30 @@ let submissions = [
   { id:"s2", newbieId:"anna", day:6, conducted:1, deals:1 },
 ];
 let subCounter = 100;
+
+// Сообщения личных чатов: {id, threadId(=id новичка), from:'newbie'|'director', text, image, at}
+let messages = [];
+
+// --- Загрузка сохранённых данных при старте (если файл есть) ---
+try {
+  if (fs.existsSync(DATA_FILE)) {
+    const d = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+    if (Array.isArray(d.users) && d.users.length) users = d.users;
+    if (Array.isArray(d.submissions)) submissions = d.submissions;
+    if (Array.isArray(d.messages)) messages = d.messages;
+    console.log("Данные загружены из файла.");
+  } else {
+    console.log("Файла данных нет — стартуем с примеров.");
+  }
+} catch (e) { console.error("Не удалось прочитать данные:", e.message); }
+
+// --- Сохранение данных (вызываем после каждого изменения) ---
+function saveData() {
+  try {
+    fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
+    fs.writeFileSync(DATA_FILE, JSON.stringify({ users, submissions, messages }));
+  } catch (e) { console.error("Не удалось сохранить данные:", e.message); }
+}
 
 // ---- Программа новичка (Дни 0–10) ----
 const program = [
@@ -144,6 +172,7 @@ app.post("/api/register",(req,res)=>{const{firstName,lastName,code}=req.body||{}
   const role=o.codes.director===code?"DIRECTOR":"NEWBIE";const id="u"+Date.now();
   const codes=role==="DIRECTOR"?{newbie:id.toUpperCase()+"-NEW"}:{};
   users.push({id,firstName,lastName:lastName||"",role,referrerId:o.id,codes,...nm(0,0,0,0,0)});
+  saveData();
   res.json({id,name:`${firstName} ${lastName||""}`.trim(),role:roleLabel(role)});});
 
 // Новичок отправляет итоги дня с цифрами
@@ -152,6 +181,7 @@ app.post("/api/submit-day",(req,res)=>{const{userId,day,calls,assigned,conducted
   u.calls+=Math.max(0,+calls||0); u.meetingsAssigned+=Math.max(0,+assigned||0); u.dailyPoints+=POINTS.daily;
   const c=Math.max(0,+conducted||0), d=Math.max(0,+deals||0);
   if(c>0||d>0) submissions.push({id:"s"+(++subCounter),newbieId:u.id,day:+day||currentDay(),conducted:c,deals:d});
+  saveData();
   res.json({ok:true,pending:(c>0||d>0)});});
 
 // Директор подтверждает/отклоняет итоги дня. Может ИСПРАВИТЬ цифры перед подтверждением.
@@ -162,7 +192,46 @@ app.post("/api/confirm",(req,res)=>{const{submissionId,approve,conducted,deals}=
     const c=conducted!==undefined?Math.max(0,+conducted||0):s.conducted; // если директор исправил — берём его цифры
     const d=deals!==undefined?Math.max(0,+deals||0):s.deals;
     u.meetingsConducted+=c;u.deals+=d;}
-  submissions.splice(i,1);res.json({ok:true});});
+  submissions.splice(i,1);saveData();res.json({ok:true});});
+
+// ---- ЛИЧНЫЙ ЧАТ новичок ↔ директор (thread = id новичка) ----
+// Сообщения треда
+app.get("/api/chat/:threadId",(req,res)=>{
+  const t=req.params.threadId;
+  res.json(messages.filter(m=>m.threadId===t).sort((a,b)=>a.at-b.at));
+});
+// Отправить сообщение (текст и/или скрин в формате data:base64)
+app.post("/api/chat/:threadId",(req,res)=>{
+  const t=req.params.threadId; const {from,text,image}=req.body||{};
+  const newbie=findUser(t);
+  if(!newbie||!isNewbie(newbie)) return res.status(404).json({error:"Чат не найден"});
+  let imageUrl=null;
+  if(image && typeof image==="string" && image.startsWith("data:image/")){
+    try{
+      const m=image.match(/^data:(image\/\w+);base64,(.+)$/);
+      if(m){ const ext=m[1].split("/")[1].replace("jpeg","jpg");
+        const fn=`msg_${Date.now()}_${Math.random().toString(36).slice(2,7)}.${ext}`;
+        fs.mkdirSync(UPLOAD_DIR,{recursive:true});
+        fs.writeFileSync(path.join(UPLOAD_DIR,fn), Buffer.from(m[2],"base64"));
+        imageUrl=`/uploads/${fn}`; }
+    }catch(e){ console.error("Скрин не сохранён:",e.message); }
+  }
+  if(!(text&&text.trim()) && !imageUrl) return res.status(400).json({error:"Пустое сообщение"});
+  const msg={ id:"m"+Date.now()+Math.random().toString(36).slice(2,5), threadId:t,
+    from:(from==="director"?"director":"newbie"), text:(text||"").trim(), image:imageUrl, at:Date.now() };
+  messages.push(msg); saveData(); res.json(msg);
+});
+// Директору — список его чатов с новичками (с последним сообщением)
+app.get("/api/threads/:directorId",(req,res)=>{
+  const dir=findUser(req.params.directorId); if(!dir) return res.status(404).json({error:"Не найден"});
+  const team=newbiesOf(dir.id);
+  res.json(team.map(n=>{
+    const ms=messages.filter(m=>m.threadId===n.id).sort((a,b)=>a.at-b.at);
+    const last=ms[ms.length-1];
+    return { threadId:n.id, name:fullName(n),
+      last: last?(last.image?"📷 фото":last.text):"", lastFrom:last?last.from:null, count:ms.length };
+  }));
+});
 
 // Кабинет по роли
 app.get("/api/cabinet/:id",(req,res)=>{const u=findUser(req.params.id);if(!u)return res.status(404).json({error:"Не найден"});
